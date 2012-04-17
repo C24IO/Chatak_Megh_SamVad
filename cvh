@@ -1,0 +1,75 @@
+execve("./chatak", ["./chatak"], [/* 29 vars */]) = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+brk(0)                                  = 0x804c000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40017000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=82368, ...}) = 0
+old_mmap(NULL, 82368, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40018000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libpthread.so.0", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\360I\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=88109, ...}) = 0
+old_mmap(NULL, 69016, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4002d000
+old_mmap(0x4003b000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xe000) = 0x4003b000
+old_mmap(0x4003c000, 7576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4003c000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libc.so.6", O_RDONLY)    = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\200U\1"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=1153188, ...}) = 0
+old_mmap(NULL, 1159068, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4003e000
+old_mmap(0x4014f000, 32768, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x111000) = 0x4014f000
+old_mmap(0x40157000, 8092, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40157000
+close(3)                                = 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40159000
+set_thread_area({entry_number:-1 -> 6, base_addr:0x40159aa0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
+munmap(0x40018000, 82368)               = 0
+set_tid_address(0x40159ae8)             = 2878
+rt_sigaction(SIGRTMIN, {0x400318c0, [], SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0x40031940, [], SA_RESTART|SA_SIGINFO}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) = 0
+_sysctl({{CTL_KERN, KERN_VERSION}, 2, 0xbffff7f0, 31, (nil), 0}) = 0
+brk(0)                                  = 0x804c000
+brk(0x806e000)                          = 0x806e000
+rt_sigaction(SIGPROF, {0x400f84a0, ~[], SA_RESTART}, {SIG_DFL}, 8) = 0
+setitimer(ITIMER_PROF, {it_interval={0, 1}, it_value={0, 1}}, {it_interval={0, 0}, it_value={0, 0}}) = 0
+rt_sigaction(SIGINT, {SIG_IGN}, {SIG_DFL}, 8) = 0
+rt_sigaction(SIGQUIT, {SIG_IGN}, {SIG_DFL}, 8) = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+clone(child_stack=0, flags=CLONE_PARENT_SETTID|SIGCHLD, parent_tidptr=0xbffff8a8) = 2879
+waitpid(2879, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0) = 2879
+--- SIGPROF (Profiling timer expired) @ 0 (0) ---
+sigreturn()                             = ? (mask now [CHLD])
+--- SIGPROF (Profiling timer expired) @ 0 (0) ---
+sigreturn()                             = ? (mask now [CHLD])
+rt_sigaction(SIGINT, {SIG_DFL}, NULL, 8) = 0
+rt_sigaction(SIGQUIT, {SIG_DFL}, NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+open("/tmp/cvh_tmp1", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "1\n", 4096)                    = 2
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+rt_sigaction(SIGINT, {SIG_IGN}, {SIG_DFL}, 8) = 0
+rt_sigaction(SIGQUIT, {SIG_IGN}, {SIG_DFL}, 8) = 0
+rt_sigprocmask(SIG_BLOCK, [CHLD], [], 8) = 0
+clone(child_stack=0, flags=CLONE_PARENT_SETTID|SIGCHLD, parent_tidptr=0xbffff8a8) = 2883
+waitpid(2883, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0) = 2883
+--- SIGPROF (Profiling timer expired) @ 0 (0) ---
+sigreturn()                             = ? (mask now [CHLD])
+rt_sigaction(SIGINT, {SIG_DFL}, NULL, 8) = 0
+--- SIGPROF (Profiling timer expired) @ 0 (0) ---
+sigreturn()                             = ? (mask now [CHLD])
+rt_sigaction(SIGQUIT, {SIG_DFL}, NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+mmap2(NULL, 8388608, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4015a000
+mprotect(0x4015a000, 4096, PROT_NONE)   = 0
+clone(child_stack=0x409594c4, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID|CLONE_DETACHED, parent_tidptr=0x40959bf8, {entry_number:6, base_addr:0x40959bb0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}, child_tidptr=0x40959bf8) = 2884
+futex(0x40959bf8, FUTEX_WAIT, 2884, NULL) = 0

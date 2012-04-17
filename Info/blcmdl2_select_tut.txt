@@ -1,0 +1,887 @@
+* You are here:*
+About <http://about.com>>Computing & Technology
+<http://about.com/compute>>Focus on Linux </>
+About.com <http://about.com>
+Home </>
+Essentials <javascript:mN(1);>
+Linux Glossary </library/glossary/blglossary.htm>Linux Commands
+</library/cmd/blcmd.htm>Shell Commands </library/cmd/blcmds.htm>Linux
+Newbie Admin. </library/bl/open/newbie/blnewbie_toc.htm>Software
+Top-picks </cs/softoffice/tp/tp_officesuite.htm>
+Linux Offers <javascript:mN(9);>
+Unix Command </z/js/o.htm?k=unix%20command&d=Unix%20Command> Unix
+Scripts </z/js/o.htm?k=unix%20scripts&d=Unix%20Scripts> Unix Shared
+Hosting
+</z/js/o.htm?k=unix%20shared%20hosting&d=Unix%20Shared%20Hosting> Unix
+Admin </z/js/o.htm?k=unix%20admin&d=Unix%20Admin> Unix Fax Server
+</z/js/o.htm?k=unix%20fax%20server&d=Unix%20Fax%20Server> What are
+offers? <javascript:zpu(512,uy+'/z/ad/wao.htm',350,200,'wao',300,180)>
+Articles & Resources <javascript:mN(0);>
+Linux 101 </od/linux101/>Glossaries </od/glossary/>Linux HowTos
+</od/howtos/>Linux / Shell Commands </od/commands/>Linux Distributions
+</od/dist/>Linux Documentation </od/linuxdocumentation/>Linux Software
+</od/soft/>Open Source Issues </od/opensource/>Embedded Linux
+</od/embedded/>Linux / Technology News </od/news/>From Our Readers
+</od/fromreaders/>
+Buyer's Guide <javascript:mN(2);>
+Before You Buy </cs/bb.htm>Top Picks </cs/tp.htm>Top 3 Free Office
+Suites for Linux </cs/softoffice/tp/tp_officesuite.htm>Product Reviews
+</cs/gr.htm>
+Articles </cs/a.htm>
+Forums </mpboards.htm>
+Help </gi/pages/hc.htm>
+ 
+
+ 
+
+
+        FREE Gift
+
+with sign up to About's FREE Focus on Linux newsletter! *Limited time
+offer.*
+*See Online Courses <http://u.about.com/>*
+
+ 
+
+  	 	
+Search
+
+Focus on Linux </>
+* Linux / Unix Command: */select_tut/**
+Command Library </library/cmd/blcmdl.htm>
+
+
+    NAME
+
+select, pselect, FD_CLR, FD_ISSET, FD_SET, FD_ZERO - synchronous I/O
+multiplexing  
+
+
+    SYNOPSIS
+
+*#include <sys/time.h <file:/usr/include/sys/time.h>>*
+*#include <sys/types.h <file:/usr/include/sys/types.h>>*
+*#include <unistd.h <file:/usr/include/unistd.h>>*
+
+*int select(int */n/*, fd_set **/readfds/*,* *fd_set **/writefds/*,
+fd_set **/exceptfds/*,* *struct timeval **/utimeout/*);*
+
+*int pselect(int */n/*, fd_set **/readfds/*,* *fd_set **/writefds/*,
+fd_set **/exceptfds/*,* *const struct timespec **/ntimeout/*, sigset_t
+**/sigmask/*);*
+
+*FD_CLR(int */fd/*, fd_set **/set/*);*
+*FD_ISSET(int */fd/*, fd_set **/set/*);*
+*FD_SET(int */fd/*, fd_set **/set/*);*
+*FD_ZERO(fd_set **/set/*);*  
+
+
+    DESCRIPTION
+
+*select* (or *pselect*) is the pivot function of most C programs that
+handle more than one simultaneous file descriptor (or socket handle) in
+an efficient manner. Its principal arguments are three arrays of file
+descriptors: /readfds/, /writefds/, and /exceptfds/. The way that
+*select* is usually used is to block while waiting for a "change of
+status" on one or more of the file descriptors. A "change of status" is
+when more characters become available from the file descriptor; /or/
+when space becomes available within the kernel's internal buffers for
+more to be written to the file descriptor, /or/ when a file descriptor
+goes into error (in the case of a socket or pipe this is when the other
+end of the connection is closed).
+
+In summary, *select* just watches multiple file descriptors, and is the
+standard Unix call to do so.
+
+The arrays of file descriptors are called /file descriptor sets/. Each
+set is declared as type *fd_set*, and its contents can be altered with
+the macros *FD_CLR*, *FD_ISSET*, *FD_SET*, and *FD_ZERO*. *FD_ZERO* is
+usually the first function to be used on a newly declared set.
+Thereafter, the individual file descriptors that you are interested in
+can be added one by one with *FD_SET*. *select* modifies the contents of
+the sets according to the rules described below; after calling *select*
+you can test if your file descriptor is still present in the set with
+the *FD_ISSET* macro. *FD_ISSET* returns non-zero if the descriptor is
+present and zero if it is not. *FD_CLR* removes a file descriptor from
+the set although I can't see the use for it in a clean program.
+
+ 
+
+
+    ARGUMENTS
+
+/readfds/
+    This set is watched to see if data is available for reading from any
+    of its file descriptors. After *select* has returned, /readfds/ will
+    be cleared of all file descriptors except for those file descriptors
+    that are immediately available for reading with a *recv()* (for
+    sockets) or *read()* (for pipes, files, and sockets) call. 
+/writefds/
+    This set is watched to see if there is space to write data to any of
+    its file descriptor. After *select* has returned, /writefds/ will be
+    cleared of all file descriptors except for those file descriptors
+    that are immediately available for writing with a *send()* (for
+    sockets) or *write()* (for pipes, files, and sockets) call. 
+/exceptfds/
+    This set is watched for exceptions or errors on any of the file
+    descriptors. However, that is actually just a rumor. How you use
+    /exceptfds/ is to watch for /Out of Bounds/ (OOB) data. OOB data is
+    data sent on a socket using the *MSG_OOB* flag, and hence
+    /exceptfds/ only really applies to sockets. See *recv
+    </library/cmd/blcmdl2_recv.htm>*(2) and *send
+    </library/cmd/blcmdl2_send.htm>*(2) about this. After *select* has
+    returned, /exceptfds/ will be cleared of all file descriptors except
+    for those descriptors that are available for reading OOB data. You
+    can only ever read one byte of OOB data though (which is done with
+    *recv()*), and writing OOB data (done with *send*) can be done at
+    any time and will not block. Hence there is no need for a fourth set
+    to check if a socket is available for writing OOB data. 
+/n/
+    This is an integer one more than the maximum of any file descriptor
+    in any of the sets. In other words, while you are busy adding file
+    descriptors to your sets, you must calculate the maximum integer
+    value of all of them, then increment this value by one, and then
+    pass this as /n/ to *select*. 
+/utimeout/
+
+        This is the longest time *select* must wait before returning,
+        even if nothing interesting happened. If this value is passed as
+        *NULL*, then *select* blocks indefinitely waiting for an event.
+        /utimeout/ can be set to zero seconds, which causes *select* to
+        return immediately. The structure *struct timeval* is defined as,
+
+struct timeval {
+    time_t tv_sec;    /* seconds */
+    long tv_usec;     /* microseconds */
+};
+
+/ntimeout/
+
+        This argument has the same meaning as /utimeout/ but *struct
+        timespec* has nanosecond precision as follows,
+
+struct timespec {
+    long tv_sec;    /* seconds */
+    long tv_nsec;   /* nanoseconds */
+};
+
+/sigmask/
+    This argument holds a set of signals to allow while performing a
+    *pselect* call (see *sigaddset
+    </library/cmd/blcmdl3_sigaddset.htm>*(3) and *sigprocmask
+    </library/cmd/blcmdl2_sigprocmask.htm>*(2)). It can be passed as
+    NULL, in which case it does not modify the set of allowed signals on
+    entry and exit to the function. It will then behave just like *select*.
+
+ 
+
+
+    COMBINING SIGNAL AND DATA EVENTS
+
+*pselect* must be used if you are waiting for a signal as well as data
+from a file descriptor. Programs that receive signals as events normally
+use the signal handler only to raise a global flag. The global flag will
+indicate that the event must be processed in the main loop of the
+program. A signal will cause the *select* (or *pselect*) call to return
+with *errno* set to *EINTR*. This behavior is essential so that signals
+can be processed in the main loop of the program, otherwise *select*
+would block indefinitely. Now, somewhere in the main loop will be a
+conditional to check the global flag. So we must ask: what if a signal
+arrives after the conditional, but before the *select* call? The answer
+is that *select* would block indefinitely, even though an event is
+actually pending. This race condition is solved by the *pselect* call.
+This call can be used to mask out signals that are not to be received
+except within the *pselect* call. For instance, let us say that the
+event in question was the exit of a child process. Before the start of
+the main loop, we would block *SIGCHLD* using *sigprocmask*. Our
+*pselect* call would enable *SIGCHLD* by using the virgin signal mask.
+Our program would look like:
+
+int child_events = 0;
+
+void child_sig_handler (int x) {
+    child_events++;
+    signal (SIGCHLD, child_sig_handler);
+}
+
+int main (int argc, char **argv) {
+    sigset_t sigmask, orig_sigmask;
+
+    sigemptyset (&sigmask);
+    sigaddset (&sigmask, SIGCHLD);
+    sigprocmask (SIG_BLOCK, &sigmask,
+                                &orig_sigmask);
+
+    signal (SIGCHLD, child_sig_handler);
+
+    for (;;) { /* main loop */
+        for (; child_events > 0; child_events--) {
+            /* do event work here */
+        }
+        r = pselect (n, &rd, &wr, &er, 0, &orig_sigmask);
+
+        /* main body of program */
+    }
+}
+
+Note that the above *pselect* call can be replaced with:
+
+        sigprocmask (SIG_BLOCK, &orig_sigmask, 0);
+        r = select (n, &rd, &wr, &er, 0);
+        sigprocmask (SIG_BLOCK, &sigmask, 0);
+
+but then there is still the possibility that a signal could arrive after
+the first *sigprocmask* and before the *select*. If you do do this, it
+is prudent to at least put a finite timeout so that the process does not
+block. At present glibc probably works this way. The Linux kernel does
+not have a native *pselect* system call as yet so this is all probably
+much of a mute point.
+
+ 
+
+
+    PRACTICAL
+
+So what is the point of *select*? Can't I just read and write to my
+descriptors whenever I want? The point of select is that it watches
+multiple descriptors at the same time and properly puts the process to
+sleep if there is no activity. It does this while enabling you to handle
+multiple simultaneous pipes and sockets. Unix programmers often find
+themselves in a position where they have to handle IO from more than one
+file descriptor where the data flow may be intermittent. If you were to
+merely create a sequence of *read* and *write* calls, you would find
+that one of your calls may block waiting for data from/to a file
+descriptor, while another file descriptor is unused though available for
+data. *select* efficiently copes with this situation.
+
+A classic example of *select* comes from the *select* man page:
+
+#include <stdio.h <file:/usr/include/stdio.h>>
+#include <sys/time.h <file:/usr/include/sys/time.h>>
+#include <sys/types.h <file:/usr/include/sys/types.h>>
+#include <unistd.h <file:/usr/include/unistd.h>>
+
+int
+main(void) {
+    fd_set rfds;
+    struct timeval tv;
+    int retval;
+
+    /* Watch stdin (fd 0) to see when it has input. */
+    FD_ZERO(&rfds);
+    FD_SET(0, &rfds);
+    /* Wait up to five seconds. */
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
+    retval = select(1, &rfds, NULL, NULL, &tv);
+    /* Don't rely on the value of tv now! */
+
+    if (retval)
+        printf("Data is available now.\n");
+        /* FD_ISSET(0, &rfds) will be true. */
+    else
+        printf("No data within five seconds.\n");
+
+    exit(0);
+}
+
+ 
+
+
+    PORT FORWARDING EXAMPLE
+
+Here is an example that better demonstrates the true utility of
+*select*. The listing below a TCP forwarding program that forwards from
+one TCP port to another.
+
+#include <stdlib.h <file:/usr/include/stdlib.h>>
+#include <stdio.h <file:/usr/include/stdio.h>>
+#include <unistd.h <file:/usr/include/unistd.h>>
+#include <sys/time.h <file:/usr/include/sys/time.h>>
+#include <sys/types.h <file:/usr/include/sys/types.h>>
+#include <string.h <file:/usr/include/string.h>>
+#include <signal.h <file:/usr/include/signal.h>>
+#include <sys/socket.h <file:/usr/include/sys/socket.h>>
+#include <netinet/in.h <file:/usr/include/netinet/in.h>>
+#include <arpa/inet.h <file:/usr/include/arpa/inet.h>>
+#include <errno.h <file:/usr/include/errno.h>>
+
+static int forward_port;
+
+#undef max
+#define max(x,y) ((x) > (y) ? (x) : (y))
+
+static int listen_socket (int listen_port) {
+    struct sockaddr_in a;
+    int s;
+    int yes;
+    if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror ("socket");
+        return -1;
+    }
+    yes = 1;
+    if (setsockopt
+        (s, SOL_SOCKET, SO_REUSEADDR,
+         (char *) &yes, sizeof (yes)) < 0) {
+        perror ("setsockopt");
+        close (s);
+        return -1;
+    }
+    memset (&a, 0, sizeof (a));
+    a.sin_port = htons (listen_port);
+    a.sin_family = AF_INET;
+    if (bind
+        (s, (struct sockaddr *) &a, sizeof (a)) < 0) {
+        perror ("bind");
+        close (s);
+        return -1;
+    }
+    printf ("accepting connections on port %d\n",
+            (int) listen_port);
+    listen (s, 10);
+    return s;
+}
+
+static int connect_socket (int connect_port,
+                           char *address) {
+    struct sockaddr_in a;
+    int s;
+    if ((s = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror ("socket");
+        close (s);
+        return -1;
+    }
+
+    memset (&a, 0, sizeof (a));
+    a.sin_port = htons (connect_port);
+    a.sin_family = AF_INET;
+
+    if (!inet_aton
+        (address,
+         (struct in_addr *) &a.sin_addr.s_addr)) {
+        perror ("bad IP address format");
+        close (s);
+        return -1;
+    }
+
+    if (connect
+        (s, (struct sockaddr *) &a,
+         sizeof (a)) < 0) {
+        perror ("connect()");
+        shutdown (s, SHUT_RDWR);
+        close (s);
+        return -1;
+    }
+    return s;
+}
+
+#define SHUT_FD1 {                      \
+        if (fd1 >= 0) {                 \
+            shutdown (fd1, SHUT_RDWR);  \
+            close (fd1);                \
+            fd1 = -1;                   \
+        }                               \
+    }
+
+#define SHUT_FD2 {                      \
+        if (fd2 >= 0) {                 \
+            shutdown (fd2, SHUT_RDWR);  \
+            close (fd2);                \
+            fd2 = -1;                   \
+        }                               \
+    }
+
+#define BUF_SIZE 1024
+
+int main (int argc, char **argv) {
+    int h;
+    int fd1 = -1, fd2 = -1;
+    char buf1[BUF_SIZE], buf2[BUF_SIZE];
+    int buf1_avail, buf1_written;
+    int buf2_avail, buf2_written;
+
+    if (argc != 4) {
+        fprintf (stderr,
+                 "Usage\n\tfwd <listen-port> \
+<forward-to-port> <forward-to-ip-address>\n");
+        exit (1);
+    }
+
+    signal (SIGPIPE, SIG_IGN);
+
+    forward_port = atoi (argv[2]);
+
+    h = listen_socket (atoi (argv[1]));
+    if (h < 0)
+        exit (1);
+
+    for (;;) {
+        int r, n = 0;
+        fd_set rd, wr, er;
+        FD_ZERO (&rd);
+        FD_ZERO (&wr);
+        FD_ZERO (&er);
+        FD_SET (h, &rd);
+        n = max (n, h);
+        if (fd1 > 0 && buf1_avail < BUF_SIZE) {
+            FD_SET (fd1, &rd);
+            n = max (n, fd1);
+        }
+        if (fd2 > 0 && buf2_avail < BUF_SIZE) {
+            FD_SET (fd2, &rd);
+            n = max (n, fd2);
+        }
+        if (fd1 > 0
+            && buf2_avail - buf2_written > 0) {
+            FD_SET (fd1, &wr);
+            n = max (n, fd1);
+        }
+        if (fd2 > 0
+            && buf1_avail - buf1_written > 0) {
+            FD_SET (fd2, &wr);
+            n = max (n, fd2);
+        }
+        if (fd1 > 0) {
+            FD_SET (fd1, &er);
+            n = max (n, fd1);
+        }
+        if (fd2 > 0) {
+            FD_SET (fd2, &er);
+            n = max (n, fd2);
+        }
+
+        r = select (n + 1, &rd, &wr, &er, NULL);
+
+        if (r == -1 && errno == EINTR)
+            continue;
+        if (r < 0) {
+            perror ("select()");
+            exit (1);
+        }
+        if (FD_ISSET (h, &rd)) {
+            unsigned int l;
+            struct sockaddr_in client_address;
+            memset (&client_address, 0, l =
+                    sizeof (client_address));
+            r = accept (h, (struct sockaddr *)
+                        &client_address, &l);
+            if (r < 0) {
+                perror ("accept()");
+            } else {
+                SHUT_FD1;
+                SHUT_FD2;
+                buf1_avail = buf1_written = 0;
+                buf2_avail = buf2_written = 0;
+                fd1 = r;
+                fd2 =
+                    connect_socket (forward_port,
+                                    argv[3]);
+                if (fd2 < 0) {
+                    SHUT_FD1;
+                } else
+                    printf ("connect from %s\n",
+                            inet_ntoa
+                            (client_address.sin_addr));
+            }
+        }
+/* NB: read oob data before normal reads */
+        if (fd1 > 0)
+            if (FD_ISSET (fd1, &er)) {
+                char c;
+                errno = 0;
+                r = recv (fd1, &c, 1, MSG_OOB);
+                if (r < 1) {
+                    SHUT_FD1;
+                } else
+                    send (fd2, &c, 1, MSG_OOB);
+            }
+        if (fd2 > 0)
+            if (FD_ISSET (fd2, &er)) {
+                char c;
+                errno = 0;
+                r = recv (fd2, &c, 1, MSG_OOB);
+                if (r < 1) {
+                    SHUT_FD1;
+                } else
+                    send (fd1, &c, 1, MSG_OOB);
+            }
+        if (fd1 > 0)
+            if (FD_ISSET (fd1, &rd)) {
+                r =
+                    read (fd1, buf1 + buf1_avail,
+                          BUF_SIZE - buf1_avail);
+                if (r < 1) {
+                    SHUT_FD1;
+                } else
+                    buf1_avail += r;
+            }
+        if (fd2 > 0)
+            if (FD_ISSET (fd2, &rd)) {
+                r =
+                    read (fd2, buf2 + buf2_avail,
+                          BUF_SIZE - buf2_avail);
+                if (r < 1) {
+                    SHUT_FD2;
+                } else
+                    buf2_avail += r;
+            }
+        if (fd1 > 0)
+            if (FD_ISSET (fd1, &wr)) {
+                r =
+                    write (fd1,
+                           buf2 + buf2_written,
+                           buf2_avail -
+                           buf2_written);
+                if (r < 1) {
+                    SHUT_FD1;
+                } else
+                    buf2_written += r;
+            }
+        if (fd2 > 0)
+            if (FD_ISSET (fd2, &wr)) {
+                r =
+                    write (fd2,
+                           buf1 + buf1_written,
+                           buf1_avail -
+                           buf1_written);
+                if (r < 1) {
+                    SHUT_FD2;
+                } else
+                    buf1_written += r;
+            }
+/* check if write data has caught read data */
+        if (buf1_written == buf1_avail)
+            buf1_written = buf1_avail = 0;
+        if (buf2_written == buf2_avail)
+            buf2_written = buf2_avail = 0;
+/* one side has closed the connection, keep
+   writing to the other side until empty */
+        if (fd1 < 0
+            && buf1_avail - buf1_written == 0) {
+            SHUT_FD2;
+        }
+        if (fd2 < 0
+            && buf2_avail - buf2_written == 0) {
+            SHUT_FD1;
+        }
+    }
+    return 0;
+}
+
+The above program properly forwards most kinds of TCP connections
+including OOB signal data transmitted by *telnet* servers. It handles
+the tricky problem of having data flow in both directions
+simultaneously. You might think it more efficient to use a *fork()* call
+and devote a thread to each stream. This becomes more tricky than you
+might suspect. Another idea is to set non-blocking IO using an *ioctl()*
+call. This also has its problems because you end up having to have
+inefficient timeouts.
+
+The program does not handle more than one simultaneous connection at a
+time, although it could easily be extended to do this with a linked list
+of buffers - one for each connection. At the moment, new connections
+cause the current connection to be dropped.
+
+ 
+
+
+    SELECT LAW
+
+Many people who try to use *select* come across behavior that is
+difficult to understand and produces non-portable or borderline results.
+For instance, the above program is carefully written not to block at any
+point, even though it does not set its file descriptors to non-blocking
+mode at all (see *ioctl </library/cmd/blcmdl2_ioctl.htm>*(2)). It is
+easy to introduce subtle errors that will remove the advantage of using
+*select*, hence I will present a list of essentials to watch for when
+using the *select* call.
+
+*1.*
+    You should always try use *select* without a timeout. Your program
+    should have nothing to do if there is no data available. Code that
+    depends on timeouts is not usually portable and difficult to debug. 
+*2.*
+    The value /n/ must be properly calculated for efficiency as
+    explained above. 
+*3.*
+    No file descriptor must be added to any set if you do not intend to
+    check its result after the *select* call, and respond appropriately.
+    See next rule. 
+*4.*
+    After *select* returns, all file descriptors in all sets /must/ be
+    checked. Any file descriptor that is available for writing /must/ be
+    written to, and any file descriptor available for reading /must/ be
+    read, etc. 
+*5.*
+    The functions *read()*, *recv()*, *write()*, and *send()* do /not/
+    necessarily read/write the full amount of data that you have
+    requested. If they do read/write the full amount, its because you
+    have a low traffic load and a fast stream. This is not always going
+    to be the case. You should cope with the case of your functions only
+    managing to send or receive a single byte. 
+*6.*
+    Never read/write only in single bytes at a time unless your are
+    really sure that you have a small amount of data to process. It is
+    extremely inefficient not to read/write as much data as you can
+    buffer each time. The buffers in the example above are 1024 bytes
+    although they could easily be made as large as the maximum possible
+    packet size on your local network. 
+*7.*
+    The functions *read()*, *recv()*, *write()*, and *send()* as well as
+    the *select()* call can return -1 with an errno of *EINTR* or
+    *EAGAIN* (*EWOULDBLOCK*) which are not errors. These results must be
+    properly managed (not done properly above). If your program is not
+    going to receive any signals then it is unlikely you will get
+    *EINTR*. If your program does not set non-blocking IO, you will not
+    get *EAGAIN*. Nonetheless you should still cope with these errors
+    for completeness. 
+*8.*
+    Never call *read()*, *recv()*, *write()*, or *send()* with a buffer
+    length of zero. 
+*9.*
+    Except as indicated in *7.*, the functions *read()*, *recv()*,
+    *write()*, and *send()* never have a return value less than 1 except
+    if an error has occurred. For instance, a *read()* on a pipe where
+    the other end has died returns zero (so does an end-of-file error),
+    /but/ only returns zero once (a followup read or write will return
+    -1). Should any of these functions return 0 or -1, you should /not/
+    pass that descriptor to select ever again. In the above example, I
+    close the descriptor immediately, and then set it to -1 to prevent
+    it being included in a set. 
+*10.*
+    The timeout value must be initialized with each new call to
+    *select*, since some operating systems modify the structure.
+    *pselect* however does not modify its timeout structure. 
+*11.*
+    I have heard that the Windows socket layer does not cope with OOB
+    data properly. It also does not cope with *select* calls when no
+    file descriptors are set at all. Having no file descriptors set is a
+    useful way to sleep the process with sub-second precision by using
+    the timeout. (See further on.)
+
+ 
+
+
+    USLEEP EMULATION
+
+On systems that do not have a *usleep* function, you can call *select*
+with a finite timeout and no file descriptors as follows:
+
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 200000;  /* 0.2 seconds */
+    select (0, NULL, NULL, NULL, &tv);
+
+This is only guarenteed to work on Unix systems, however.
+
+ 
+
+
+    RETURN VALUE
+
+On success, *select* returns the total number of file descriptors still
+present in the file descriptor sets.
+
+If *select* timed out, then the file descriptors sets should be all
+empty (but may not be on some systems). However the return value will
+definitely be zero.
+
+A return value of -1 indicates an error, with *errno* being set
+appropriately. In the case of an error, the returned sets and the
+timeout struct contents are undefined and should not be used. *pselect*
+however never modifies /ntimeout/.
+
+ 
+
+
+    ERRORS
+
+*EBADF*
+    A set contained an invalid file descriptor. This error often occurs
+    when you add a file descriptor to a set that you have already issued
+    a *close* on, or when that file descriptor has experienced some kind
+    of error. Hence you should cease adding to sets any file descriptor
+    that returns an error on reading or writing. 
+*EINTR*
+    An interrupting signal was caught like *SIGINT* or *SIGCHLD* etc. In
+    this case you should rebuild your file descriptor sets and retry. 
+*EINVAL*
+    Occurs if /n/ is negative. 
+*ENOMEM*
+    Internal memory allocation failure.
+
+ 
+
+
+    SEE ALSO
+
+*accept </library/cmd/blcmdl2_accept.htm>*(2), *connect
+</library/cmd/blcmdl2_connect.htm>*(2), *ioctl
+</library/cmd/blcmdl2_ioctl.htm>*(2), *poll
+</library/cmd/blcmdl2_poll.htm>*(2), *read
+</library/cmd/blcmdl2_read.htm>*(2), *recv
+</library/cmd/blcmdl2_recv.htm>*(2), *select
+</library/cmd/blcmdl2_select.htm>*(2), *send
+</library/cmd/blcmdl2_send.htm>*(2), *sigaddset
+</library/cmd/blcmdl3_sigaddset.htm>*(3), *sigdelset
+</library/cmd/blcmdl3_sigdelset.htm>*(3), *sigemptyset
+</library/cmd/blcmdl3_sigemptyset.htm>*(3), *sigfillset
+</library/cmd/blcmdl3_sigfillset.htm>*(3), *sigismember
+</library/cmd/blcmdl3_sigismember.htm>*(3), *sigprocmask
+</library/cmd/blcmdl2_sigprocmask.htm>*(2), *write
+</library/cmd/blcmdl2_write.htm>*(2)
+
+ 
+
+------------------------------------------------------------------------
+
+*Important:* Use the /man/ command (/% man/) to see how a command is
+used on your particular computer.
+
+*>> Linux/Unix Command Library* <blcmdl.htm>
+
+*>> Shell Command Library* <blcmd.htm>
+
+Your Guide, Juergen Haas </mbiopage.htm>	From Juergen Haas </mbiopage.htm>,
+Your Guide to Focus on Linux </>.
+FREE GIFT with Newsletter! Act Now! </gi/pages/mmail.htm>
+
+
+          Sponsored Links
+
+PowerBatchBuild Automation for PowerBuilderpowerbatch.com
+<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BmS710DlKQtbYMM6OaLqG5eYB-ZH-BJX32YwBwI23AYDxBBAEGAQgqKX3ASgGQLQSSMs5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51eC5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc2VsZWN0X3R1dC5odG0&num=4&adurl=http://sqlbatch.com/pbc/&client=ca-primedia-premium_js>
+
+Telnet Information GuideDirectory On Telnet Services Cost Effective,
+Free Trialwww.searchthis.ws
+<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BjXoX0DlKQtbYMM6OaLqG5eYBx5DxBuvx_ZIBwI23AdCGAxAFGAUgqKX3ASgGQLQSSMg5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51eC5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc2VsZWN0X3R1dC5odG0&num=5&adurl=http://www.searchthis.ws/topics/telnet.aspx%3Fsource%3D2&client=ca-primedia-premium_js>
+
+HPS WinTailUltimate Windows port of Unix tail. Highlighting, filters,
+and more.www.highplains.net
+<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BdpyX0DlKQtbYMM6OaLqG5eYBlPj9Bo6jr5EBwI23AdCGAxAGGAYgqKX3ASgGQLQSSJ85qgEOcHJpbWVkaWFfbGludXiyAQ9saW51eC5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc2VsZWN0X3R1dC5odG0&num=6&adurl=http://www.highplains.net/wintail.html&client=ca-primedia-premium_js>
+
+	
+
+
+          Sponsored Links
+
+LinuxQuestions.org WikiThe LQ Wiki is a completely free collaborative
+Linux knowledgebasewiki.linuxquestions.org
+<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BlsoZ0DlKQtbYMM6OaLqG5eYB28fcB7PRtI4BwI23AeDUAxABGAEgqKX3ASgGQLQSSK45qgEOcHJpbWVkaWFfbGludXiyAQ9saW51eC5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc2VsZWN0X3R1dC5odG0&num=1&adurl=http://wiki.linuxquestions.org/&client=ca-primedia-premium_js>
+
+Zip Command Line448 bit Encryption, Compression Secure E-mail, Free
+Trialwww.cypherix.com/file_encryption
+<http://pagead2.googlesyndication.com/pagead/iclk?adurl=http://www.cypherix.com/encrypt_command_line_files.htm&sa=l&ai=BBbiK0DlKQtbYMM6OaLqG5eYB-LjaB9iGg50BwI23AdCGAxACGAIgqKX3ASgGQLQSSKU5oAHxzML_A6oBDnByaW1lZGlhX2xpbnV4sgEPbGludXguYWJvdXQuY29tyAEB2gE5aHR0cDovL2xpbnV4LmFib3V0LmNvbS9saWJyYXJ5L2NtZC9ibGNtZGwyX3NlbGVjdF90dXQuaHRt&num=2&client=ca-primedia-premium_js>
+
+Telnet InformationTelnet Solutions. Read Product Reviews And Compare
+Priceswww.advancedwebsearch.com
+<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BS2co0DlKQtbYMM6OaLqG5eYBxKSMCdTr5bgBwI23AdCGAxADGAMgqKX3ASgGQLQSSIY5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51eC5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc2VsZWN0X3R1dC5odG0&num=3&adurl=http://www.advancedwebsearch.com/result.aspx%3Fkeyword%3Dtelnet%26orig%3D300&client=ca-primedia-premium_js>
+
+Advertisement
+
+
+          Most Popular
+
+Linux Commands - Command Library - Man Pages
+<http://linux.about.com/od/commands/l/blcmdl.htm>Linux Commands and
+Shell Commands Libraries
+<http://linux.about.com/od/commands/l/blcmd.htm>Shell Commands Libraries
+- Linux Unix <http://linux.about.com/od/commands/l/blcmds.htm>find -
+Linux Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl1_find.htm>Linux Newbie
+Administrator Guide <http://linux.about.com/od/embedded/l/blnewbie_toc.htm>
+
+
+          What's Hot
+
+Linux FAQ - Networking
+<http://linux.about.com/od/linux101/l/blnewbie4_5_5.htm>Fonts 101 -- A
+Quick Introduction to Fonts
+<http://linux.about.com/od/howtos/l/blfont2.htm>fork - Linux Command -
+Unix Command <http://linux.about.com/od/commands/l/blcmdl2_fork.htm>sudo
+- Linux Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl8_sudo.htm>mkinitrd - Linux
+Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl8_mkinitr.htm>
+
+ 	 	Topic Index </c/a.htm> | </gi/pages/stay.htm> |
+</gi/pages/stay.htm#Y>	back to top <#top>
+email to a friend
+</gi/pages/shareurl.htm?PG=http://linux.about.com/library/cmd/blcmdl2_select_tut.htm&zItl=> email
+to a friend
+</gi/pages/shareurl.htm?PG=http://linux.about.com/library/cmd/blcmdl2_select_tut.htm&zItl=>   decrease
+font size <javascript:cF(-1,0);> increase font size
+<javascript:cF(1,0);> font size	About.com <http://about.com/>
+
+Our Story <http://ourstory.about.com/> | Be a Guide
+<http://beaguide.about.com/> | Advertising Info
+<http://beanadvertiser.about.com/> | Work at About
+<http://jobs.about.com/> | Site Map
+<http://spiderbites.about.com/sitemap.htm> | Icons
+<http://about.com/i.htm> | Help </gi/pages/hc.htm>
+©2005 About, Inc. All rights reserved.
+User Agreement </gi/pages/uagree.htm> | Patent Info.
+<http://about.com/gi/pages/patent.htm> | Privacy Policy
+</gi/pages/mprivacy.htm> | Kids' Privacy Policy
+</gi/pages/mprivacy.htm#kids>
+
+
+          Most Popular
+
+Linux Commands - Command Library - Man Pages
+<http://linux.about.com/od/commands/l/blcmdl.htm>Linux Commands and
+Shell Commands Libraries
+<http://linux.about.com/od/commands/l/blcmd.htm>Shell Commands Libraries
+- Linux Unix <http://linux.about.com/od/commands/l/blcmds.htm>find -
+Linux Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl1_find.htm>Linux Newbie
+Administrator Guide <http://linux.about.com/od/embedded/l/blnewbie_toc.htm>
+
+
+          What's Hot
+
+Linux FAQ - Networking
+<http://linux.about.com/od/linux101/l/blnewbie4_5_5.htm>Fonts 101 -- A
+Quick Introduction to Fonts
+<http://linux.about.com/od/howtos/l/blfont2.htm>fork - Linux Command -
+Unix Command <http://linux.about.com/od/commands/l/blcmdl2_fork.htm>sudo
+- Linux Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl8_sudo.htm>mkinitrd - Linux
+Command - Unix Command
+<http://linux.about.com/od/commands/l/blcmdl8_mkinitr.htm>
+
+
+          Related Topics
+
+PC Hardware / Reviews <http://compreviews.about.com>Focus on Windows
+<http://windows.about.com>Focus on Macs <http://macs.about.com>Focus on
+Unix <http://unix.about.com>Computer Certification
+<http://certification.about.com>
+
+
+About.com <http://about.com/?tb=1>	Beat the IRS!
+<http://taxtime.about.com/?tb=2> 				*Free* Newsletter
+<javascript:zOs(0,2)> 
+
+Arts & Literature <http://about.com/arts/?tb=1>Automotive
+<http://about.com/autos/?tb=1>Business
+<http://about.com/business/?tb=1>Cities & Towns
+<http://about.com/citiestowns/?tb=1>Computing & Technology
+<http://about.com/compute/?tb=1>Education
+<http://about.com/education/?tb=1>Entertainment
+<http://about.com/entertainment/?tb=1>Electronics & Gadgets
+<http://about.com/gadgets/?tb=1>Food & Drink
+<http://about.com/food/?tb=1>Health & Fitness
+<http://about.com/health/?tb=1>Hobbies & Games
+<http://about.com/hobbies/?tb=1>Home & Garden
+<http://about.com/homegarden/?tb=1>Homework Help
+<http://about.com/homework/?tb=1>Jobs & Careers
+<http://about.com/careers/?tb=1>Money <http://about.com/money/?tb=1>News
+& Issues <http://about.com/newsissues/?tb=1>Parenting & Family
+<http://about.com/parenting/?tb=1>People & Relations
+<http://about.com/people/?tb=1>Religion & Spirituality
+<http://about.com/religion/?tb=1>Shopping
+<http://about.com/shopping/?tb=1>Sports & Recreation
+<http://about.com/sports/?tb=1>Style <http://about.com/style/?tb=1>Teens
+<http://about.com/teens/?tb=1>Travel <http://about.com/travel/?tb=1>

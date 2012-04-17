@@ -1,0 +1,28 @@
+indent -v  -gnu   prime_thread.c -o indented.c 
+plot "CPU_STATS" using 1:2 with linespoints
+dump -0 -v    ../Threaded/  -f bak/files_backup
+dump -0 -v    ../Threaded/  -f bak/files_backup1
+
+ gcc   -pg -g -O3  -o chatak Chatakd.c -lpthread
+ gcc   -pg -g -O3  -o megh  Meghd.c -lpthread
+
+dump -0 ../Threaded/  -f /cogito/BACKUPS/eklavya_0.1_17_07_04_2005 
+---------------------NEW FILE APPENDED FROM HERE -----------------------------------------------
+gcc -D_GNU_SOURCE -o super_mas super_mas.c restart.c uici.c uiciname.c -lnsl
+cc -O3 -g  -D_GNU_SOURCE -o client_condor client_condor.c restart.c uici.c uiciname.c -lnsl
+gcc -D_GNU_SOURCE -o Super_Master Super_Master.c sys_calls.c uici.c uiciname.c -lnsl
+strace -o debug -v -f -ff ./Super_Master 9999
+lex flock_config.l ; gcc -O3 -g  -o flock_lexer lex.yy.c 
+./flock_lexer FLOCK_TO 10.1.30.22,10.1.30.100 FLOCK_FROM 10.1.23.30,10.1.23.2
+cc -O3 -g  -D_GNU_SOURCE -o condor_client condor_client.c sys_calls.c uici.c uiciname.c -lnsl
+cc -O3 -g  -D_GNU_SOURCE -o condor_client condor_client.c sys_calls.c uici.c uiciname.c -lnsl
+gcc -Wall -fomit-frame-pointer -O3 -g  -D_GNU_SOURCE -o condor_client condor_client.c sys_calls.c iostat.c  uici.c uiciname.c -lnsl
+
+
+
+lex flock_to.l ; gcc -O3 -g  -o flock_to_lexer lex.yy.c 
+lex flock_from.l ; gcc -O3 -g  -o flock_from_lexer lex.yy.c 
+
+
+ ./flock_to_lexer   FLOCK_TO "10.1.30.99 , 10.1.30.4"  ; cat N_condor_config | grep FLOCK 
+./flock_from_lexer   FLOCK_FROM "10.1.30.99 , 10.1.30.4"  ; cat N_condor_config | grep FLOCK 

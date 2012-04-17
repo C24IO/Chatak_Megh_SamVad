@@ -1,0 +1,160 @@
+/*The doubly linked list handling with thread safe only for the requestor host list.*/
+
+struct REQ_HOSTS{
+
+	struct hostent *req_host;
+	long int rank;
+	int nice_val;
+	long int req_queue_len;
+	int time_fact1;
+	int time_fact2;
+	int stability_fact;
+
+};
+
+
+typedef struct reqhost_dllist {
+
+	struct dllist *flink;
+	struct dllist *blink;
+	REQ_HOSTS reqhost;
+
+} *reqhostDllist;
+
+
+
+/*Function Prototypes*/
+
+
+
+reqhostDllist new_dllist();
+void free_dllist(reqhostDllist);
+
+void dll_delete_node(reqhostDllist);
+int dll_empty(reqhostDllist);
+
+
+
+
+void dll_append_req_hosts(reqhostDllist, REQ_HOSTS);
+void dll_prepend_req_hosts(reqhostDllist, REQ_HOSTS);
+void dll_insert_b_req_hosts(reqhostDllist, REQ_HOSTS);
+void dll_insert_a_req_hosts(reqhostDllist, REQ_HOSTS);
+
+
+REQ_HOSTS  dll_val_req_host(reqhostDllist);
+
+
+
+/*# defines and macros for easy operations.*/
+
+
+#define dll_first(d) ((d)->flink)
+#define dll_next(d) ((d)->flink)
+#define dll_last(d) ((d)->blink)
+#define dll_prev(d) ((d)->blink)
+#define dll_nil(d) (d)
+
+#define dll_traverse(ptr, list) \
+	  for (ptr = list->flink; ptr != list; ptr = ptr->flink)
+#define dll_rtraverse(ptr, list) \
+	  for (ptr = list->blink; ptr != list; ptr = ptr->blink)
+
+#endif
+
+
+
+
+
+/*
+* Each list contains a sentinal node, so that     
+*  * the first item in list l is l->flink.  If l is  
+*   * empty, then l->flink = l->blink = l.            
+*/
+
+
+reqhostDllist new_dllist()
+{
+	reqhostDllist d;
+	  
+	d = (reqhostDllist) malloc (sizeof(struct dllist));
+	d->flink = d;
+	d->blink = d;
+	return d;
+}
+ 
+
+
+
+
+
+
+void dll_insert_b(reqhostDllist node, Jval v)       /* Inserts before a given node */
+{
+	reqhostDllist newnode;
+	  
+	newnode = (reqhostDllist) malloc (sizeof(struct dllist));
+	newnode->val = v;
+	newnode->flink = node;
+	newnode->blink = node->blink;
+	newnode->flink->blink = newnode;	  
+	newnode->blink->flink = newnode;
+}
+
+void dll_insert_a_req_hosts(reqhostDllist n, REQ_HOSTS reqhost)        /* Inserts  REQ_HOSTS reqhost  after a given node */
+{
+	dll_insert_b(n->flink, reqhost);
+}
+
+
+
+
+
+
+void dll_append_req_hosts(reqhostDllist l, REQ_HOSTS reqhost)     /* Inserts  REQ_HOSTS reqhost at the end of the list */
+{
+	dll_insert_b(l, reqhost);
+}
+
+
+
+
+
+void dll_prepend_req_hosts(reqhostDllist l, REQ_HOSTS reqhost)    /* Inserts  REQ_HOSTS reqhost at the beginning of the list */
+{
+	dll_insert_b(l->flink, reqhost);
+}
+
+
+
+
+
+REQ_HOSTS dll_val_req_hosts(reqhostDllist l) /* gives value of  REQ_HOSTS reqhost */
+{
+	return l->reqhost;
+}
+
+
+
+
+
+void dll_delete_node(reqhostDllist node)		/* Deletes an arbitrary iterm */
+{
+	node->flink->blink = node->blink;
+	node->blink->flink = node->flink;
+	free(node);
+}
+
+int dll_empty(reqhostDllist l)
+{
+	return (l->flink == l);
+}
+ 
+void free_dllist(reqhostDllist l)
+{
+	while (!dll_empty(l)) {
+		dll_delete_node(dll_first(l));
+	}
+	free(l);
+}
+ 

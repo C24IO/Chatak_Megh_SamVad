@@ -1,0 +1,183 @@
+CONDOR_HOST		= minix.it.mitp
+RELEASE_DIR		= /usr/local/condor
+LOCAL_DIR		= $(TILDE)
+LOCAL_CONFIG_FILE	= $(LOCAL_DIR)/condor_config.local
+CONDOR_ADMIN		= root@minix.it.mitp
+MAIL			= /usr/bin/mail
+UID_DOMAIN	= $(FULL_HOSTNAME)
+FILESYSTEM_DOMAIN	= $(FULL_HOSTNAME)
+FLOCK_FROM = 10.1.30.254 
+FLOCK_TO =  158.144.64.53
+FLOCK_NEGOTIATOR_HOSTS = $(FLOCK_TO)
+FLOCK_COLLECTOR_HOSTS = $(FLOCK_TO)
+HOSTALLOW_ADMINISTRATOR = $(CONDOR_HOST)
+HOSTALLOW_OWNER = $(FULL_HOSTNAME), $(HOSTALLOW_ADMINISTRATOR)
+HOSTALLOW_READ = * 
+HOSTALLOW_WRITE = *
+HOSTALLOW_NEGOTIATOR = $(NEGOTIATOR_HOST)
+HOSTALLOW_NEGOTIATOR_SCHEDD = $(NEGOTIATOR_HOST), $(FLOCK_NEGOTIATOR_HOSTS)
+HOSTALLOW_WRITE_COLLECTOR = $(HOSTALLOW_WRITE), $(FLOCK_FROM)
+HOSTALLOW_WRITE_STARTD    = $(HOSTALLOW_WRITE), $(FLOCK_FROM)
+HOSTALLOW_READ_COLLECTOR  = $(HOSTALLOW_READ), $(FLOCK_FROM)
+HOSTALLOW_READ_STARTD     = $(HOSTALLOW_READ), $(FLOCK_FROM)
+LOCK		= $(LOG)
+GLIDEIN_SERVER_NAME = gridftp.cs.wisc.edu
+GLIDEIN_SERVER_DIR = /p/condor/public/binaries/glidein
+ALL_DEBUG               =
+MAX_COLLECTOR_LOG	= 1000000
+COLLECTOR_DEBUG		=
+MAX_KBDD_LOG		= 1000000
+KBDD_DEBUG		=
+MAX_NEGOTIATOR_LOG	= 1000000
+NEGOTIATOR_DEBUG	= D_MATCH
+MAX_NEGOTIATOR_MATCH_LOG = 1000000
+MAX_SCHEDD_LOG		= 1000000
+SCHEDD_DEBUG		= D_COMMAND
+MAX_SHADOW_LOG		= 1000000
+SHADOW_DEBUG		=
+MAX_STARTD_LOG		= 1000000
+STARTD_DEBUG		= D_COMMAND
+MAX_STARTER_LOG		= 1000000
+STARTER_DEBUG		= D_NODATE
+MAX_MASTER_LOG		= 1000000
+MASTER_DEBUG		= D_COMMAND
+MINUTE		= 60
+HOUR		= (60 * $(MINUTE))
+StateTimer	= (CurrentTime - EnteredCurrentState)
+ActivityTimer	= (CurrentTime - EnteredCurrentActivity)
+ActivationTimer = (CurrentTime - JobStart)
+LastCkpt	= (CurrentTime - LastPeriodicCheckpoint)
+STANDARD	= 1
+PVM		= 4
+VANILLA		= 5
+MPI		= 8
+IsPVM           = (TARGET.JobUniverse == $(PVM))
+IsMPI           = (TARGET.JobUniverse == $(MPI))
+IsVanilla       = (TARGET.JobUniverse == $(VANILLA))
+IsStandard      = (TARGET.JobUniverse == $(STANDARD))
+SmallJob	= (TARGET.ImageSize <  (15 * 1024))
+NonCondorLoadAvg	= (LoadAvg - CondorLoadAvg)
+BackgroundLoad		= 0.3
+HighLoad		= 0.5
+StartIdleTime		= 15 * $(MINUTE)
+ContinueIdleTime	=  5 * $(MINUTE)
+MaxSuspendTime		= 10 * $(MINUTE)
+MaxVacateTime		= 10 * $(MINUTE)
+KeyboardBusy		= (KeyboardIdle < $(MINUTE))
+ConsoleBusy		= (ConsoleIdle  < $(MINUTE))
+CPUIdle			= ($(NonCondorLoadAvg) <= $(BackgroundLoad))
+CPUBusy			= ($(NonCondorLoadAvg) >= $(HighLoad))
+KeyboardNotBusy		= ($(KeyboardBusy) == False)
+BigJob		= (TARGET.ImageSize >= (50 * 1024))
+MediumJob	= (TARGET.ImageSize >= (15 * 1024) && TARGET.ImageSize < (50 * 1024))
+SmallJob	= (TARGET.ImageSize <  (15 * 1024))
+JustCPU			= ($(CPUBusy) && ($(KeyboardBusy) == False))
+MachineBusy		= ($(CPUBusy) || $(KeyboardBusy))
+WANT_SUSPEND 		= $(UWCS_WANT_SUSPEND)
+WANT_VACATE		= $(UWCS_WANT_VACATE)
+START			= $(UWCS_START)
+SUSPEND			= $(UWCS_SUSPEND)
+CONTINUE		= $(UWCS_CONTINUE)
+PREEMPT			= $(UWCS_PREEMPT)
+KILL			= $(UWCS_KILL)
+PERIODIC_CHECKPOINT	= $(UWCS_PERIODIC_CHECKPOINT)
+PREEMPTION_REQUIREMENTS	= $(UWCS_PREEMPTION_REQUIREMENTS)
+PREEMPTION_RANK		= $(UWCS_PREEMPTION_RANK)
+UWCS_WANT_SUSPEND	= ( $(SmallJob) || $(KeyboardNotBusy) \
+$(IsPVM) || $(IsVanilla) )
+UWCS_WANT_VACATE 	= ( $(ActivationTimer) > 10 * $(MINUTE) \
+$(IsPVM) || $(IsVanilla) )
+UWCS_START	= ( (KeyboardIdle > $(StartIdleTime)) \
+&& ( $(CPUIdle) || \
+(State != "Unclaimed" && State != "Owner")) )
+UWCS_SUSPEND = ( $(KeyboardBusy) || \
+( (CpuBusyTime > 2 * $(MINUTE)) \
+&& $(ActivationTimer) > 90 ) )
+UWCS_CONTINUE = ( $(CPUIdle) && ($(ActivityTimer) > 10) \
+&& (KeyboardIdle > $(ContinueIdleTime)) )
+UWCS_PREEMPT = ( ((Activity == "Suspended") && \
+($(ActivityTimer) > $(MaxSuspendTime))) \
+(SUSPEND && (WANT_SUSPEND == False)) )
+UWCS_KILL = $(ActivityTimer) > $(MaxVacateTime) 
+UWCS_PERIODIC_CHECKPOINT	= $(LastCkpt) > (3 * $(HOUR))
+UWCS_PREEMPTION_REQUIREMENTS = $(StateTimer) > (1 * $(HOUR)) && RemoteUserPrio > SubmittorPrio * 1.2
+UWCS_PREEMPTION_RANK = (RemoteUserPrio * 1000000) - TARGET.ImageSize
+TESTINGMODE_WANT_SUSPEND	= False
+TESTINGMODE_WANT_VACATE		= False
+TESTINGMODE_START		= True
+TESTINGMODE_SUSPEND		= False
+TESTINGMODE_CONTINUE		= True
+TESTINGMODE_PREEMPT		= False
+TESTINGMODE_KILL		= False
+TESTINGMODE_PERIODIC_CHECKPOINT	= False
+TESTINGMODE_PREEMPTION_REQUIREMENTS = False
+TESTINGMODE_PREEMPTION_RANK = 0
+LOG		= $(LOCAL_DIR)/log
+SPOOL		= $(LOCAL_DIR)/spool
+EXECUTE		= $(LOCAL_DIR)/execute
+BIN		= $(RELEASE_DIR)/bin
+LIB		= $(RELEASE_DIR)/lib
+SBIN		= $(RELEASE_DIR)/sbin
+HISTORY		= $(SPOOL)/history
+COLLECTOR_LOG	= $(LOG)/CollectorLog
+KBDD_LOG	= $(LOG)/KbdLog
+MASTER_LOG	= $(LOG)/MasterLog
+NEGOTIATOR_LOG	= $(LOG)/NegotiatorLog
+NEGOTIATOR_MATCH_LOG = $(LOG)/MatchLog
+SCHEDD_LOG	= $(LOG)/SchedLog
+SHADOW_LOG	= $(LOG)/ShadowLog
+STARTD_LOG	= $(LOG)/StartLog
+STARTER_LOG	= $(LOG)/StarterLog
+SHADOW_LOCK	= $(LOCK)/ShadowLock
+COLLECTOR_HOST  = $(CONDOR_HOST)
+NEGOTIATOR_HOST = $(CONDOR_HOST)
+RESERVED_DISK		= 5
+DAEMON_LIST			= MASTER, STARTD, SCHEDD
+MASTER				= $(SBIN)/condor_master
+STARTD				= $(SBIN)/condor_startd
+SCHEDD				= $(SBIN)/condor_schedd
+KBDD				= $(SBIN)/condor_kbdd
+NEGOTIATOR			= $(SBIN)/condor_negotiator
+COLLECTOR			= $(SBIN)/condor_collector
+GRID_MONITOR			= $(SBIN)/grid_monitor.sh
+MASTER_ADDRESS_FILE = $(LOG)/.master_address
+PREEN				= $(SBIN)/condor_preen
+PREEN_ARGS			= -m -r
+STARTER_LIST = STARTER, STARTER_PVM, STARTER_STANDARD
+STARTER			= $(SBIN)/condor_starter
+STARTER_PVM		= $(SBIN)/condor_starter.pvm
+STARTER_STANDARD	= $(SBIN)/condor_starter.std
+STARTD_ADDRESS_FILE	= $(LOG)/.startd_address
+BenchmarkTimer = (CurrentTime - LastBenchmark)
+RunBenchmarks : (LastBenchmark == 0 ) || ($(BenchmarkTimer) >= (4 * $(HOUR)))
+CONSOLE_DEVICES	= mouse, console
+COLLECTOR_HOST_STRING = "$(COLLECTOR_HOST)"
+STARTD_EXPRS = COLLECTOR_HOST_STRING
+STARTD_JOB_EXPRS = ImageSize, ExecutableSize, JobUniverse, NiceUser
+SHADOW_LIST = SHADOW, SHADOW_PVM, SHADOW_STANDARD
+SHADOW			= $(SBIN)/condor_shadow
+SHADOW_PVM		= $(SBIN)/condor_shadow.pvm
+SHADOW_STANDARD		= $(SBIN)/condor_shadow.std
+SCHEDD_ADDRESS_FILE	= $(LOG)/.schedd_address
+SHADOW_SIZE_ESTIMATE	= 1800
+SHADOW_RENICE_INCREMENT	= 10
+PERIODIC_EXPR_INTERVAL = 60
+QUEUE_SUPER_USERS	= root, condor
+PVMD			= $(SBIN)/condor_pvmd
+PVMGS			= $(SBIN)/condor_pvmgs
+VALID_SPOOL_FILES	= job_queue.log, job_queue.log.tmp, history, \
+Accountant.log, Accountantnew.log
+INVALID_LOG_FILES	= core
+JAVA	= /usr/bin/java
+JAVA_MAXHEAP_ARGUMENT	= -Xmx
+JAVA_CLASSPATH_DEFAULT = $(LIB) $(LIB)/scimark2lib.jar .
+JAVA_CLASSPATH_ARGUMENT = -classpath
+JAVA_CLASSPATH_SEPARATOR = :
+JAVA_BENCHMARK_TIME = 2
+JAVA_EXTRA_ARGUMENTS =
+GRIDMANAGER			= $(SBIN)/condor_gridmanager
+GAHP				= $(SBIN)/gahp_server
+MAX_GRIDMANAGER_LOG	= 1000000
+GRIDMANAGER_DEBUG	= D_COMMAND
+GRIDMANAGER_LOG = /tmp/GridmanagerLog.$(USERNAME)
+CRED_MIN_TIME_LEFT		= 120 

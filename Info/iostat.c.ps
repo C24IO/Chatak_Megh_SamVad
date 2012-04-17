@@ -1,0 +1,2056 @@
+%!PS-Adobe-3.0
+%%Title: iostat.c
+%%For: root
+%%Creator: a2ps version 4.13
+%%CreationDate: Sun Mar 27 21:01:28 2005
+%%BoundingBox: 24 24 588 768
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 5
+%%PageOrder: Ascend
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontType get 0 eq {
+    currentfont /FontMatrix get 3 get
+  }{
+    currentfont /FontMatrix get 3 get 1000 mul
+  } ifelse
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Define these in case they're not in the FontInfo (also, here
+    % they're easier to get to.
+    /UnderlinePosition 1 def
+    /UnderlineThickness 1 def
+    
+    % Get the underline position and thickness if they're defined.
+    currentdict /FontInfo known {
+      FontInfo
+      
+      dup /UnderlinePosition known {
+	dup /UnderlinePosition get
+	0 exch FontMatrix transform exch pop
+	/UnderlinePosition exch def
+      } if
+      
+      dup /UnderlineThickness known {
+	/UnderlineThickness get
+	0 exch FontMatrix transform exch pop
+	/UnderlineThickness exch def
+      } if
+      
+    } if
+    currentdict 
+  end 
+} bind def
+
+% composite fonts for ASCII-EUC mixed strings
+% Version 1.2 1/31/1990
+% Original Ken'ichi HANDA (handa@etl.go.jp)
+% Modified Norio Katayama (katayama@rd.nacsis.ac.jp),1998
+% Extend & Fix Koji Nakamaru (maru@on.cs.keio.ac.jp), 1999
+% Anyone can freely copy, modify, distribute this program.
+
+/copyfont {	% font-dic extra-entry-count  copyfont  font-dic
+	1 index maxlength add dict begin
+	{	1 index /FID ne 2 index /UniqueID ne and
+		{def} {pop pop} ifelse
+	} forall
+	currentdict
+	end
+} bind def
+
+/compositefont { % ASCIIFontName EUCFontName RomanScale RomanOffset Rot(T/F) compositefont font
+    /RomanRotation exch def
+    /RomanOffset exch def
+    /RomanScale exch def
+    userdict /fixeucfont_dict known not {
+	userdict begin
+	    /fixeucfont_dict 2 dict begin
+		/UpperByteEncoding [
+		    16#00 1 16#20 { pop 0 } for
+		    16#21 1 16#28 { 16#20 sub } for
+		    16#29 1 16#2F { pop 0 } for
+		    16#30 1 16#74 { 16#27 sub } for
+		    16#75 1 16#FF { pop 0 } for
+		] def
+	        /LowerByteEncoding [
+		    16#00 1 16#A0 { pop /.notdef } for
+		    16#A1 1 16#FE { 16#80 sub 16 2 string cvrs
+				    (cXX) dup 1 4 -1 roll
+				    putinterval cvn } for
+		    /.notdef
+		] def
+		currentdict
+	    end def
+	end
+    } if
+    findfont dup /FontType get 0 eq {
+	14 dict begin
+	    %
+	    % 7+8 bit EUC font
+	    %
+	    12 dict begin
+		/EUCFont exch def
+		/FontInfo (7+8 bit EUC font) readonly def
+		/PaintType 0 def
+		/FontType 0 def
+		/FontMatrix matrix def
+		% /FontName
+		/Encoding fixeucfont_dict /UpperByteEncoding get def
+		/FMapType 2 def
+		EUCFont /WMode known
+		{ EUCFont /WMode get /WMode exch def }
+		{ /WMode 0 def } ifelse
+		/FDepVector [
+		    EUCFont /FDepVector get 0 get
+		    [ 16#21 1 16#28 {} for 16#30 1 16#74 {} for ]
+		    {
+			13 dict begin
+			    /EUCFont EUCFont def
+			    /UpperByte exch 16#80 add def	
+			    % /FontName
+			    /FontInfo (EUC lower byte font) readonly def
+			    /PaintType 0 def
+			    /FontType 3 def
+			    /FontMatrix matrix def
+			    /FontBBox {0 0 0 0} def
+			    /Encoding
+				fixeucfont_dict /LowerByteEncoding get def
+			    % /UniqueID
+			    % /WMode
+			    /BuildChar {
+				gsave
+				exch dup /EUCFont get setfont
+				/UpperByte get
+				2 string
+				dup 0 4 -1 roll put
+				dup 1 4 -1 roll put
+				dup stringwidth setcharwidth
+				0 0 moveto show
+				grestore
+			    } bind def
+			    currentdict
+			end
+			/lowerbytefont exch definefont
+		    } forall
+		] def
+		currentdict
+	    end
+	    /eucfont exch definefont
+	    exch
+	    findfont 1 copyfont dup begin
+		RomanRotation {
+			/FontMatrix FontMatrix
+			[ 0 RomanScale neg RomanScale 0 RomanOffset neg 0 ]
+			matrix concatmatrix def
+		}{
+			/FontMatrix FontMatrix
+			[ RomanScale 0 0 RomanScale 0 RomanOffset ] matrix concatmatrix
+			def
+			/CDevProc
+			    {pop pop pop pop 0 exch -1000 exch 2 div 880} def
+		} ifelse
+	    end
+	    /asciifont exch definefont
+	    exch
+	    /FDepVector [ 4 2 roll ] def
+	    /FontType 0 def
+	    /WMode 0 def
+	    /FMapType 4 def
+	    /FontMatrix matrix def
+	    /Encoding [0 1] def
+	    /FontBBox {0 0 0 0} def
+%	    /FontHeight 1.0 def % XXXX
+	    /FontHeight RomanScale 1.0 ge { RomanScale }{ 1.0 } ifelse def
+	    /Descent -0.3 def   % XXXX
+	    currentdict
+	end
+	/tmpfont exch definefont
+	pop
+	/tmpfont findfont
+    }{
+	pop findfont 0 copyfont
+    } ifelse
+} def	
+
+/slantfont {	% FontName slant-degree  slantfont  font'
+    exch findfont 1 copyfont begin
+    [ 1 0 4 -1 roll 1 0 0 ] FontMatrix exch matrix concatmatrix
+    /FontMatrix exch def
+    currentdict
+    end
+} def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 612 def
+/sw 792 def
+/llx 24 def
+/urx 768 def
+/ury 588 def
+/lly 24 def
+/#copies 1 def
+/th 15.000000 def
+/fnfs 11 def
+/bfs 7.493857 def
+/cw 4.496314 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 81.400000 mul
+def
+/ph
+   522.321860 th add
+def
+/pmw urx llx sub pw 2 mul sub 1 div def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+  dup pmw add pw add
+] def
+/y [
+  pmh ph add 0 mul ph add
+  dup
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1-2) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/*) c n
+( * iostat.c v2.2) N
+( * Linux I/O performance monitoring utility) N
+( *) N
+( * Special thanks to Stephen C. Tweedie's for his first version of) N
+( * "sard" I/O counters for the Linux kernel. Without his work this) N
+( * wouldn't be possible.) N
+( *) N
+( * Original iostat code by Greg Franks \(Mar 10 1999\)) N
+( * ) N
+( * Maintenance by Zlatko Calusic <zlatko@iskon.hr>) N
+( *) N
+( * v1.4 - Apr  7 2002, Zlatko Calusic <zlatko@iskon.hr>,) N
+( *      - SMP compatibility, other bugfixes, cleanups...) N
+( *) N
+( * v1.5 - Apr 10 2002, Zlatko Calusic <zlatko@iskon.hr>) N
+( *      - heavily modified & cleaned up, adapted to 2.5.8-pre3 sard patch) N
+( *) N
+( * v1.6 - Sep 24 2002, Rick Lindsley <ricklind@us.ibm.com>) N
+( *      - modified to understand new disk stats \(2.5.38\)) N
+( *) N
+( * v2.0 - Jan  6 2004, Zlatko Calusic <zlatko@iskon.hr>) N
+( *      - major release, support for both 2.4 & 2.6 stable kernels) N
+( *) N
+( * v2.1 - Nov 25 2004, Zlatko Calusic <zlatko@iskon.hr>) N
+( *      - just added license info \(GPL\)) N
+( *) N
+( * v2.2 - Feb 14 2005, Arnaud Desitter <arnaud.desitter@ouce.ox.ac.uk>) N
+( *                     Zlatko Calusic <zlatko@iskon.hr>) N
+( *      - adapt to in kernel scan formats, fixes to avoid overflows) N
+( */) N
+() p n
+(#include) K
+( <stdio.h>) p n
+(#include) K
+( <stdlib.h>) p n
+(#include) K
+( <string.h>) p n
+(#include) K
+( <ctype.h>) p n
+(#include) K
+( <unistd.h>) p n
+(#include) K
+( <errno.h>) p n
+(#include) K
+( <sys/param.h>) p n
+(#include) K
+( <linux/major.h>) p n
+() N
+(#ifndef) K
+( IDE_DISK_MAJOR) p n
+(#define) K
+( IDE_DISK_MAJOR\(M\) \(\(M\) == IDE0_MAJOR || \(M\) == IDE1_MAJOR || \\) p n
+() S 8 T () S 16 T () S 24 T (   \(M\) == IDE2_MAJOR || \(M\) == IDE3_MAJOR || \\) N
+() S 8 T () S 16 T () S 24 T (   \(M\) == IDE4_MAJOR || \(M\) == IDE5_MAJOR || \\) N
+() S 8 T () S 16 T () S 24 T (   \(M\) == IDE6_MAJOR || \(M\) == IDE7_MAJOR || \\) N
+() S 8 T () S 16 T () S 24 T (   \(M\) == IDE8_MAJOR || \(M\) == IDE9_MAJOR\)) N
+(#endif) K
+() p 8 T () S
+(/* !IDE_DISK_MAJOR */) c n
+() p n
+(#ifndef) K
+( SCSI_DISK_MAJOR) p n
+(#ifndef) K
+( SCSI_DISK8_MAJOR) p n
+(#define) K
+( SCSI_DISK8_MAJOR 128) p n
+(#endif) K n
+(#ifndef) S
+( SCSI_DISK15_MAJOR) p n
+(#define) K
+( SCSI_DISK15_MAJOR 135) p n
+(#endif) K n
+(#define) S
+( SCSI_DISK_MAJOR\(M\) \(\(M\) == SCSI_DISK0_MAJOR || \\) p n
+() S 8 T () S 16 T () S 24 T (   \(\(M\) >= SCSI_DISK1_MAJOR && \\) N
+() S 8 T () S 16 T () S 24 T (    \(M\) <= SCSI_DISK7_MAJOR\) || \\) N
+() S 8 T () S 16 T () S 24 T (   \(\(M\) >= SCSI_DISK8_MAJOR && \\) N
+() S 8 T () S 16 T () S 24 T (    \(M\) <= SCSI_DISK15_MAJOR\)\)) N
+(#endif) K
+() p 8 T () S
+(/* !SCSI_DISK_MAJOR */) c n
+() p n
+(#define) K
+( MAX_PARTITIONS 64) p n
+() N
+(struct) k
+( part_info {) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( major;) p 32 T () S
+(/* Device major number */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( minor;) p 32 T () S
+(/* Device minor number */) c n
+() p 8 T () S
+(char) k
+( name[32];) p n
+(iostat.c) (Page 1/9) (Mar 26, 05 23:35) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(} partition[MAX_PARTITIONS];) p n
+() N
+(struct) k
+( blkio_info {) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( rd_ios;) p 32 T () S
+(/* Read I/O operations */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( rd_merges;) p 32 T () S
+(/* Reads merged */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( rd_sectors; ) p
+(/* Sectors read */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( rd_ticks;) p 32 T () S
+(/* Time in queue + service for read */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( wr_ios;) p 32 T () S
+(/* Write I/O operations */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( wr_merges;) p 32 T () S
+(/* Writes merged */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( wr_sectors; ) p
+(/* Sectors written */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( wr_ticks;) p 32 T () S
+(/* Time in queue + service for write */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( ticks;) p 32 T () S
+(/* Time of requests in queue */) c n
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( aveq;) p 32 T () S
+(/* Average queue length */) c n
+(} new_blkio[MAX_PARTITIONS], old_blkio[MAX_PARTITIONS];) p n
+() N
+(struct) k
+( cpu_info {) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( user;) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( system;) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( idle;) p n
+() S 8 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( iowait;) p n
+(} new_cpu, old_cpu;) N
+() N
+(FILE) k
+( *iofp;) p 16 T () S 24 T () S 32 T () S
+(/* /proc/diskstats or /proc/partition */) c n
+(FILE) k
+( *cpufp;) p 16 T () S 24 T () S 32 T () S
+(/* /proc/stat */) c n
+(char) k
+( *opts = ") p
+(cdDpPxh) str
+(";) p 24 T () S 32 T () S
+(/* Options */) c n
+(char) k
+( buffer[256];) p 24 T () S 32 T () S
+(/* Temporary buffer for parsing */) c n
+() p n
+(int) k
+( print_cpu = 0;) p n
+(int) k
+( print_disk_extended = 0;) p n
+(int) k
+( print_disk_util = 0;) p n
+(int) k
+( print_partition = 0;) p n
+(int) k
+( print_device = 1;) p n
+() N
+(unsigned) k
+( ) p
+(int) k
+( n_partitions;) p 32 T () S
+(/* Number of partitions */) c n
+(unsigned) k
+( ) p
+(int) k
+( ncpu;) p 24 T () S 32 T () S
+(/* Number of processors */) c n
+(unsigned) k
+( ) p
+(int) k
+( kernel;) p 24 T () S 32 T () S
+(/* Kernel: 4 \(2.4, /proc/partitions\)) c n
+() S 8 T () S 16 T () S 24 T () S 32 T (        or 6 \(2.6, /proc/diskstats\) */) N
+() p n
+(void) k
+( print_usage\(\)) p n
+({) N
+() S 8 T (fputs\(") S
+(iostat v2.2, \(C\) 1999-2005 by ) str
+(") p n
+() S 8 T (      ") S
+(Greg Franks, Zlatko Calusic, Rick Lindsley, Arnaud Desitter\\n) str
+(") p n
+() S 8 T (      ") S
+(Distributed under the terms of the GPL \(see LICENSE file\)\\n) str
+(") p n
+() S 8 T (      ") S
+(Usage: iostat [-cdDpPxh] [disks...] [interval [count]]\\n) str
+(") p n
+() S 8 T (      ") S
+(options:\\n\\n) str
+(") p n
+() S 8 T (      ") S
+(\\tc - print cpu usage info\\n) str
+(") p n
+() S 8 T (      ") S
+(\\td - print basic disk info\\n) str
+(") p n
+() S 8 T (      ") S
+(\\tD - print disk utilization info\\n) str
+(") p n
+() S 8 T (      ") S
+(\\tp - print partition info also\\n) str
+(") p n
+() S 8 T (      ") S
+(\\tP - print partition info only\\n) str
+(") p n
+() S 8 T (      ") S
+(\\tx - print extended disk info\\n) str
+(") p n
+() S 8 T (      ") S
+(\\th - this help\\n\\n) str
+(", stderr\);) p n
+() S 8 T (exit\(EXIT_SUCCESS\);) N
+(}) N
+() N
+(void) k
+( handle_error\() p
+(const) K
+( ) p
+(char) k
+( *string, ) p
+(int) k
+( error\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(error\) {) p n
+() S 8 T () S 16 T (fputs\(") S
+(iostat: ) str
+(", stderr\);) p n
+() S 8 T () S 16 T () S
+(if) K
+( \(errno\)) p n
+() S 8 T () S 16 T () S 24 T (perror\(string\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (fprintf\(stderr, ") S
+(%s\\n) str
+(", string\);) p n
+() S 8 T () S 16 T (exit\(EXIT_FAILURE\);) N
+() S 8 T (}) N
+(}) N
+() N
+(void) k
+( get_number_of_cpus\(\)) p n
+({) N
+(iostat.c) (Page 2/9) (Mar 26, 05 23:35) title
+border
+grestore
+(Printed by root) rhead
+(./iostat.c) (1/5) (Sunday March 27, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3-4) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(FILE) k
+( *ncpufp = fopen\(") p
+(/proc/cpuinfo) str
+(", ") p
+(r) str
+("\);) p n
+() N
+() S 8 T (handle_error\(") S
+(Can't open /proc/cpuinfo) str
+(", !ncpufp\);) p n
+() S 8 T () S
+(while) K
+( \(fgets\(buffer, ) p
+(sizeof) K
+(\(buffer\), ncpufp\)\) {) p n
+() S 8 T () S 16 T () S
+(if) K
+( \(!strncmp\(buffer, ") p
+(processor\\t:) str
+(", 11\)\)) p n
+() S 8 T () S 16 T () S 24 T (ncpu++;) N
+() S 8 T (}) N
+() S 8 T (fclose\(ncpufp\);) N
+() S 8 T (handle_error\(") S
+(Error parsing /proc/cpuinfo) str
+(", !ncpu\);) p n
+(}) N
+() N
+(int) k
+( printable\() p
+(unsigned) k
+( ) p
+(int) k
+( major, ) p
+(unsigned) k
+( ) p
+(int) k
+( minor\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(IDE_DISK_MAJOR\(major\)\) {) p n
+() S 8 T () S 16 T () S
+(return) K
+( \(!\(minor & 0x3F\) && print_device\)) p n
+() S 8 T () S 16 T () S 24 T (|| \(\(minor & 0x3F\) && print_partition\);) N
+() S 8 T (} ) S
+(else) K
+( ) p
+(if) K
+( \(SCSI_DISK_MAJOR\(major\)\) {) p n
+() S 8 T () S 16 T () S
+(return) K
+( \(!\(minor & 0x0F\) && print_device\)) p n
+() S 8 T () S 16 T () S 24 T (|| \(\(minor & 0x0F\) && print_partition\);) N
+() S 8 T (} ) S
+(else) K
+( {) p n
+() S 8 T () S 16 T () S
+(return) K
+( 1;) p 32 T () S
+(/* if uncertain, print it */) c n
+() p 8 T (}) N
+(}) N
+() N
+(/* Get partition names.  Check against match list */) c n
+(void) k
+( initialize\() p
+(char) k
+( **match_list, ) p
+(int) k
+( n_dev\)) p n
+({) N
+() S 8 T () S
+(const) K
+( ) p
+(char) k
+( *scan_fmt = ) p
+(NULL) K
+(;) p n
+() N
+() S 8 T () S
+(switch) K
+( \(kernel\) {) p n
+() S 8 T () S
+(case) K
+( 4:) p n
+() S 8 T () S 16 T (scan_fmt = ") S
+(%4d %4d %*d %31s %u) str
+(";) p n
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(case) K
+( 6:) p n
+() S 8 T () S 16 T (scan_fmt = ") S
+(%4d %4d %31s %u) str
+(";) p n
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T (}) N
+() S 8 T (handle_error\(") S
+(logic error in initialize\(\)) str
+(", !scan_fmt\);) p n
+() N
+() S 8 T () S
+(while) K
+( \(fgets\(buffer, ) p
+(sizeof) K
+(\(buffer\), iofp\)\) {) p n
+() S 8 T () S 16 T () S
+(unsigned) k
+( ) p
+(int) k
+( reads = 0;) p n
+() S 8 T () S 16 T () S
+(struct) k
+( part_info curr;) p n
+() N
+() S 8 T () S 16 T () S
+(if) K
+( \(sscanf\(buffer, scan_fmt, &curr.major, &curr.minor,) p n
+() S 8 T () S 16 T () S 24 T (   curr.name, &reads\) == 4\) {) N
+() S 8 T () S 16 T () S 24 T () S
+(unsigned) k
+( ) p
+(int) k
+( p;) p n
+() N
+() S 8 T () S 16 T () S 24 T () S
+(for) K
+( \(p = 0; p < n_partitions) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (     && \(partition[p].major != curr.major) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ( || partition[p].minor != curr.minor\);) N
+() S 8 T () S 16 T () S 24 T (     p++\);) N
+() N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(p == n_partitions && p < MAX_PARTITIONS\) {) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \(n_dev\) {) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(unsigned) k
+( ) p
+(int) k
+( j;) p n
+() N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(for) K
+( \(j = 0; j < n_dev && match_list[j];) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (     j++\) {) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S
+(if) K
+( \(!strcmp\(curr.name,) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T (    match_list[j]\)\) {) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T (partition[p] = curr;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T (n_partitions = p + 1;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+(                                } ) S
+(else) K
+( ) p
+(if) K
+( \(reads && printable\(curr.major,) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T (      curr.minor\)\) {) N
+(                                        partition[p] = curr;) N
+(                                        n_partitions = p + 1;) N
+(                                }) N
+(iostat.c) (Page 3/9) (Mar 26, 05 23:35) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(                        }) p n
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+(}) N
+() N
+(void) k
+( get_kernel_stats\(\)) p n
+({) N
+() S 8 T () S
+(const) K
+( ) p
+(char) k
+( *scan_fmt = ) p
+(NULL) K
+(;) p n
+() N
+() S 8 T () S
+(switch) K
+( \(kernel\) {) p n
+() S 8 T () S
+(case) K
+( 4:) p n
+() S 8 T () S 16 T (scan_fmt = ") S
+(%4d %4d %*d %*s %u %u %llu %u %u %u %llu %u %*u %u %u) str
+(";) p n
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(case) K
+( 6:) p n
+() S 8 T () S 16 T (scan_fmt = ") S
+(%4d %4d %*s %u %u %llu %u %u %u %llu %u %*u %u %u) str
+(";) p n
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T (}) N
+() S 8 T (handle_error\(") S
+(logic error in get_kernel_stats\(\)) str
+(", !scan_fmt\);) p n
+() N
+() S 8 T (rewind\(iofp\);) N
+() S 8 T () S
+(while) K
+( \(fgets\(buffer, ) p
+(sizeof) K
+(\(buffer\), iofp\)\) {) p n
+() S 8 T () S 16 T () S
+(int) k
+( items;) p n
+() S 8 T () S 16 T () S
+(struct) k
+( part_info curr;) p n
+() S 8 T () S 16 T () S
+(struct) k
+( blkio_info blkio;) p n
+() N
+() S 8 T () S 16 T (items = sscanf\(buffer, scan_fmt,) N
+() S 8 T () S 16 T () S 24 T (       &curr.major, &curr.minor,) N
+() S 8 T () S 16 T () S 24 T (       &blkio.rd_ios, &blkio.rd_merges,) N
+() S 8 T () S 16 T () S 24 T (       &blkio.rd_sectors, &blkio.rd_ticks, ) N
+() S 8 T () S 16 T () S 24 T (       &blkio.wr_ios, &blkio.wr_merges,) N
+() S 8 T () S 16 T () S 24 T (       &blkio.wr_sectors, &blkio.wr_ticks,) N
+() S 8 T () S 16 T () S 24 T (       &blkio.ticks, &blkio.aveq\);) N
+() N
+() S 8 T () S 16 T () S
+(/*) c n
+() S 8 T () S 16 T ( * Unfortunately, we can report only transfer rates) N
+() S 8 T () S 16 T ( * for partitions in 2.6 kernels, all other I/O) N
+() S 8 T () S 16 T ( * statistics are unavailable.) N
+() S 8 T () S 16 T ( */) N
+() p 8 T () S 16 T () S
+(if) K
+( \(items == 6\) {) p n
+() S 8 T () S 16 T () S 24 T (blkio.rd_sectors = blkio.rd_merges;) N
+() S 8 T () S 16 T () S 24 T (blkio.wr_sectors = blkio.rd_ticks;) N
+() S 8 T () S 16 T () S 24 T (blkio.rd_ios = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.rd_merges = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.rd_ticks = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.wr_ios = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.wr_merges = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.wr_ticks = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.ticks = 0;) N
+() S 8 T () S 16 T () S 24 T (blkio.aveq = 0;) N
+() S 8 T () S 16 T () S 24 T (items = 12;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S
+(if) K
+( \(items == 12\) {) p n
+() S 8 T () S 16 T () S 24 T () S
+(unsigned) k
+( ) p
+(int) k
+( p;) p n
+() N
+() S 8 T () S 16 T () S 24 T () S
+(/* Locate partition in data table */) c n
+() p 8 T () S 16 T () S 24 T () S
+(for) K
+( \(p = 0; p < n_partitions; p++\) {) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+( \(partition[p].major == curr.major) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (    && partition[p].minor == curr.minor\) {) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (new_blkio[p] = blkio;) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() N
+() S 8 T (rewind\(cpufp\);) N
+() S 8 T () S
+(while) K
+( \(fgets\(buffer, ) p
+(sizeof) K
+(\(buffer\), cpufp\)\) {) p n
+() S 8 T () S 16 T () S
+(if) K
+( \(!strncmp\(buffer, ") p
+(cpu ) str
+(", 4\)\) {) p n
+(iostat.c) (Page 4/9) (Mar 26, 05 23:35) title
+border
+grestore
+(Printed by root) rhead
+(./iostat.c) (2/5) (Sunday March 27, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5-6) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T () S 24 T () S
+(int) k
+( items;) p n
+() S 8 T () S 16 T () S 24 T () S
+(unsigned) k
+( ) p
+(long) k
+( ) p
+(long) k
+( nice, irq, softirq;) p n
+() N
+() S 8 T () S 16 T () S 24 T (items = sscanf\(buffer,) N
+() S 8 T () S 16 T () S 24 T () S 32 T (     ") S
+(cpu %llu %llu %llu %llu %llu %llu %llu) str
+(",) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (       &new_cpu.user, &nice,) N
+() S 8 T () S 16 T () S 24 T () S 32 T (       &new_cpu.system,) N
+() S 8 T () S 16 T () S 24 T () S 32 T (       &new_cpu.idle,) N
+() S 8 T () S 16 T () S 24 T () S 32 T (       &new_cpu.iowait,) N
+() S 8 T () S 16 T () S 24 T () S 32 T (       &irq, &softirq\);) N
+() N
+() S 8 T () S 16 T () S 24 T (new_cpu.user += nice;) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(items == 4\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (new_cpu.iowait = 0;) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(items == 7\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (new_cpu.system += irq + softirq;) N
+() N
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+(}) N
+() N
+(void) k
+( print_cpu_stats\(\)) p n
+({) N
+() S 8 T () S
+(double) k
+( total;) p n
+() S 8 T () S
+(struct) k
+( cpu_info cpu;) p n
+() N
+() S 8 T (cpu.user = new_cpu.user - old_cpu.user;) N
+() S 8 T (cpu.system = new_cpu.system - old_cpu.system;) N
+() S 8 T (cpu.idle = new_cpu.idle - old_cpu.idle;) N
+() S 8 T (cpu.iowait = new_cpu.iowait - old_cpu.iowait;) N
+() S 8 T (total = \(cpu.user + cpu.system + cpu.idle + cpu.iowait\) / 100.0;) N
+() S 8 T (printf\(") S
+(%3.0f %3.0f ) str
+(", cpu.user / total, cpu.system / total\);) p n
+() S 8 T () S
+(if) K
+( \(kernel == 6\)) p n
+() S 8 T () S 16 T (printf\(") S
+(%3.0f ) str
+(", cpu.iowait / total\);) p n
+() S 8 T (printf\(") S
+(hello%3.0f) str
+(", cpu.idle / total\);) p n
+(}) N
+() N
+(/*) c n
+( * Print out statistics.) N
+( * extended form is:) N
+( *   read merges) N
+( *   write merges) N
+( *   read io requests) N
+( *   write io requests) N
+( *   kilobytes read) N
+( *   kilobytes written) N
+( *   average queue length) N
+( *   average waiting time \(queue + service\)) N
+( *   average service time at disk) N
+( *   average disk utilization.) N
+( */) N
+() p n
+(#define) K
+( PER_SEC\(x\) \(1000.0 * \(x\) / deltams\)) p n
+() N
+(void) k
+( print_partition_stats\(\)) p n
+({) N
+() S 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( p;) p n
+() S 8 T () S
+(double) k
+( deltams = 1000.0 *) p n
+() S 8 T () S 16 T (\(\(new_cpu.user + new_cpu.system +) N
+() S 8 T () S 16 T (  new_cpu.idle + new_cpu.iowait\) -) N
+() S 8 T () S 16 T ( \(old_cpu.user + old_cpu.system +) N
+() S 8 T () S 16 T (  old_cpu.idle + old_cpu.iowait\)\) / ncpu / HZ;) N
+() N
+() S 8 T () S
+(for) K
+( \(p = 0; p < n_partitions; p++\) {) p n
+() S 8 T () S 16 T () S
+(struct) k
+( blkio_info blkio;) p n
+() S 8 T () S 16 T () S
+(double) k
+( n_ios;) p 32 T ( ) S
+(/* Number of requests */) c n
+() p 8 T () S 16 T () S
+(double) k
+( n_ticks;) p 32 T ( ) S
+(/* Total service time */) c n
+() p 8 T () S 16 T () S
+(double) k
+( n_kbytes; ) p
+(/* Total kbytes transferred */) c n
+() p 8 T () S 16 T () S
+(double) k
+( busy;) p 32 T ( ) S
+(/* Utilization at disk) c 56 T (\(percent\) */) N
+(iostat.c) (Page 5/9) (Mar 26, 05 23:35) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T () S
+(double) k
+( svc_t;) p 32 T ( ) S
+(/* Average disk service time */) c n
+() p 8 T () S 16 T () S
+(double) k
+( wait;) p 32 T ( ) S
+(/* Average wait */) c n
+() p 8 T () S 16 T () S
+(double) k
+( size;) p 32 T ( ) S
+(/* Average request size */) c n
+() p 8 T () S 16 T () S
+(double) k
+( queue;) p 32 T ( ) S
+(/* Average queue */) c n
+() p n
+() S 8 T () S 16 T (blkio.rd_ios = new_blkio[p].rd_ios) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].rd_ios;) N
+() S 8 T () S 16 T (blkio.rd_merges = new_blkio[p].rd_merges) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].rd_merges;) N
+() S 8 T () S 16 T (blkio.rd_sectors = new_blkio[p].rd_sectors) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].rd_sectors;) N
+() S 8 T () S 16 T (blkio.rd_ticks = new_blkio[p].rd_ticks) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].rd_ticks;) N
+() S 8 T () S 16 T (blkio.wr_ios = new_blkio[p].wr_ios) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].wr_ios;) N
+( ) S 8 T () S 16 T (blkio.wr_merges = new_blkio[p].wr_merges) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].wr_merges; ) N
+() S 8 T () S 16 T (blkio.wr_sectors = new_blkio[p].wr_sectors) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].wr_sectors;) N
+() S 8 T () S 16 T (blkio.wr_ticks = new_blkio[p].wr_ticks) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].wr_ticks;) N
+() S 8 T () S 16 T (blkio.ticks = new_blkio[p].ticks) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].ticks;) N
+() S 8 T () S 16 T (blkio.aveq = new_blkio[p].aveq) N
+() S 8 T () S 16 T () S 24 T (- old_blkio[p].aveq;) N
+() N
+() S 8 T () S 16 T (n_ios  = blkio.rd_ios + blkio.wr_ios;) N
+() S 8 T () S 16 T (n_ticks = blkio.rd_ticks + blkio.wr_ticks;) N
+() S 8 T () S 16 T (n_kbytes = \(blkio.rd_sectors + blkio.wr_sectors\) / 2.0;) N
+() N
+() S 8 T () S 16 T (queue = blkio.aveq / deltams;) N
+() S 8 T () S 16 T (size = n_ios ? n_kbytes / n_ios : 0.0;) N
+() S 8 T () S 16 T (wait = n_ios ? n_ticks / n_ios : 0.0;) N
+() S 8 T () S 16 T (svc_t = n_ios ? blkio.ticks / n_ios : 0.0;) N
+() S 8 T () S 16 T (busy = 100.0 * blkio.ticks / deltams; ) S
+(/* percentage! */) c n
+() p 8 T () S 16 T () S
+(if) K
+( \(busy > 100.0\)) p n
+() S 8 T () S 16 T () S 24 T (busy = 100.0;) N
+() N
+() S 8 T () S 16 T () S
+(if) K
+( \(print_disk_extended\) {) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+(%-6s %5.0f %5.0f %6.1f %6.1f %7.1f ) str
+(") p n
+() S 8 T () S 16 T () S 24 T (       ") S
+(%7.1f %6.1f %5.1f %6.1f %5.1f %3.0f ) str
+(",) p n
+() S 8 T () S 16 T () S 24 T (       partition[p].name,) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.rd_merges\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.wr_merges\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.rd_ios\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.wr_ios\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.rd_sectors\) / 2.0,) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.wr_sectors\) / 2.0,) N
+() S 8 T () S 16 T () S 24 T (       size, queue, wait, svc_t, busy\);) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(!p && print_cpu\) {) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (print_cpu_stats\(\);) N
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T () S 24 T (putchar\(') S
+(\\n) str
+('\);) p n
+() S 8 T () S 16 T (} ) S
+(else) K
+( ) p
+(if) K
+( \(print_disk_util\) {) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+(%4.0f %4.0f %4.0f  ) str
+(",) p n
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.rd_ios\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(blkio.wr_ios\),) N
+() S 8 T () S 16 T () S 24 T (       busy\);) N
+() S 8 T () S 16 T (} ) S
+(else) K
+( {) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+(%5.0f %3.0f %5.1f ) str
+(",) p n
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(n_kbytes\),) N
+() S 8 T () S 16 T () S 24 T (       PER_SEC\(n_ios\),) N
+() S 8 T () S 16 T () S 24 T (       svc_t\);) N
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+(}) N
+() N
+(void) k
+( print_header_lines\(\)) p n
+({) N
+(iostat.c) (Page 6/9) (Mar 26, 05 23:35) title
+border
+grestore
+(Printed by root) rhead
+(./iostat.c) (3/5) (Sunday March 27, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7-8) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( p;) p n
+() N
+() S 8 T () S
+(/* Line 1 */) c n
+() p 8 T () S
+(if) K
+( \(print_disk_extended\) {) p n
+() S 8 T () S 16 T (printf\(") S
+(%78s) str
+(",) p n
+() S 8 T () S 16 T (       ") S
+(extended device statistics                       ) str
+("\);) p n
+() S 8 T (} ) S
+(else) K
+( {) p n
+() S 8 T () S 16 T () S
+(for) K
+( \(p = 0; p < n_partitions; p++\) {) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+(%9s       ) str
+(", partition[p].name\);) p n
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() N
+() S 8 T () S
+(if) K
+( \(print_cpu\)) p n
+() S 8 T () S 16 T (printf\(") S
+(      cpu) str
+("\);) p n
+() S 8 T (putchar\(') S
+(\\n) str
+('\);) p n
+() N
+() S 8 T () S
+(/* Line 2 */) c n
+() p 8 T () S
+(if) K
+( \(print_disk_extended\) {) p n
+() S 8 T () S 16 T (printf\(") S
+(device mgr/s mgw/s    r/s    w/s    kr/s    ) str
+(") p n
+() S 8 T () S 16 T (       ") S
+(kw/s   size queue   wait svc_t  %%b ) str
+("\);) p n
+() S 8 T (} ) S
+(else) K
+( {) p n
+() S 8 T () S 16 T () S
+(for) K
+( \(p = 0; p < n_partitions; p++\) {) p n
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(print_disk_util\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (printf\(") S
+( r/s  w/s   %%b  ) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T (printf\(") S
+(  kps tps svc_t ) str
+("\);) p n
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() S 8 T () S
+(if) K
+( \(print_cpu\) {) p n
+() S 8 T () S 16 T () S
+(switch) K
+( \(kernel\) {) p n
+() S 8 T () S 16 T () S
+(case) K
+( 4:) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+( us  sy  id) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( 6:) p n
+() S 8 T () S 16 T () S 24 T (printf\(") S
+( us  sy  wt  id) str
+("\);) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() S 8 T (putchar\(') S
+(\\n) str
+('\);) p n
+(}) N
+() N
+(void) k
+( process\() p
+(int) k
+( lineno\)) p n
+({) N
+() S 8 T () S
+(unsigned) k
+( ) p
+(int) k
+( p;) p n
+() N
+() S 8 T (get_kernel_stats\(\);) N
+() N
+() S 8 T () S
+(if) K
+( \(!lineno || print_disk_extended\)) p n
+() S 8 T () S 16 T (print_header_lines\(\);) N
+() N
+() S 8 T (print_partition_stats\(\);) N
+() N
+() S 8 T () S
+(if) K
+( \(!print_disk_extended\) {) p n
+() S 8 T () S 16 T () S
+(if) K
+( \(print_cpu\)) p n
+() S 8 T () S 16 T () S 24 T (print_cpu_stats\(\);) N
+() S 8 T () S 16 T (putchar\(') S
+(\\n) str
+('\);) p n
+() S 8 T (}) N
+() N
+() S 8 T () S
+(/* Save old stats */) c n
+() p 8 T () S
+(for) K
+( \(p = 0; p < n_partitions; p++\)) p n
+() S 8 T () S 16 T (old_blkio[p] = new_blkio[p];) N
+() S 8 T (old_cpu = new_cpu;) N
+(}) N
+() N
+(int) k
+( main\() p
+(int) k
+( argc, ) p
+(char) k
+( **argv\)) p n
+({) N
+() S 8 T () S
+(int) k
+( c, n_dev, lineno;) p n
+() S 8 T () S
+(int) k
+( interval = 1;) p n
+() S 8 T () S
+(int) k
+( count = -1;) p n
+(iostat.c) (Page 7/9) (Mar 26, 05 23:35) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+() S 8 T (setlinebuf\(stdout\);) N
+() S 8 T (get_number_of_cpus\(\);) N
+() N
+() S 8 T (iofp = fopen\(") S
+(/proc/diskstats) str
+(", ") p
+(r) str
+("\);) p n
+() S 8 T () S
+(if) K
+( \(iofp\) {) p n
+() S 8 T () S 16 T (kernel = 6;) N
+() S 8 T (} ) S
+(else) K
+( {) p n
+() S 8 T () S 16 T (iofp = fopen\(") S
+(/proc/partitions) str
+(", ") p
+(r) str
+("\);) p n
+() S 8 T () S 16 T () S
+(if) K
+( \(iofp\)) p n
+() S 8 T () S 16 T () S 24 T (kernel = 4;) N
+() S 8 T (}) N
+() S 8 T (handle_error\(") S
+(Can't get I/O statistics on this system) str
+(", !iofp\);) p n
+() N
+() S 8 T (cpufp = fopen\(") S
+(/proc/stat) str
+(", ") p
+(r) str
+("\);) p n
+() S 8 T (handle_error\(") S
+(Can't open /proc/stat) str
+(", !cpufp\);) p n
+() N
+() S 8 T () S
+(while) K
+( \(\(c = getopt\(argc, argv, opts\)\) != EOF\) {) p n
+() S 8 T () S 16 T () S
+(switch) K
+( \(c\) {) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(c) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_cpu = 1;) N
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(d) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_disk_util = 0;) N
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(D) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_disk_util = 1;) N
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(P) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_device = 0;) N
+() S 8 T () S 16 T () S 24 T () S
+(/* falldown */) c n
+() p 8 T () S 16 T () S
+(case) K
+( ') p
+(p) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_partition = 1;) N
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(x) str
+(':) p n
+() S 8 T () S 16 T () S 24 T (print_disk_extended = 1;) N
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T () S
+(case) K
+( ') p
+(h) str
+(':) p n
+() S 8 T () S 16 T () S
+(default) K
+(:) p n
+() S 8 T () S 16 T () S 24 T (print_usage\(\);) N
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() N
+() S 8 T () S
+(/* No options.  Set defaults. */) c n
+() p 8 T () S
+(if) K
+( \(optind == 1\)) p n
+() S 8 T () S 16 T (print_cpu = 1;) N
+() N
+() S 8 T () S
+(/* List of disks/devices [delay [count]]. */) c n
+() p 8 T () S
+(for) K
+( \(n_dev = 0; optind + n_dev < argc) p n
+() S 8 T () S 16 T (     && !isdigit\(argv[optind + n_dev][0]\); n_dev++\);) N
+() N
+() S 8 T (initialize\(&argv[optind], n_dev\);) N
+() S 8 T (optind += n_dev;) N
+() N
+() S 8 T () S
+(/* Figure out [delay [count]].  Default is one display only */) c n
+() p 8 T () S
+(switch) K
+( \(argc - optind\) {) p n
+() S 8 T () S
+(case) K
+( 2:) p n
+() S 8 T () S 16 T (count = atoi\(argv[optind + 1]\);) N
+() S 8 T () S 16 T () S
+(/* drop down */) c n
+() p 8 T () S
+(case) K
+( 1:) p n
+() S 8 T () S 16 T (interval = atoi\(argv[optind]\);) N
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(case) K
+( 0:) p n
+() S 8 T () S 16 T (count = 0;) N
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(default) K
+(:) p n
+() S 8 T () S 16 T (print_usage\(\);) N
+() S 8 T (}) N
+() N
+(iostat.c) (Page 8/9) (Mar 26, 05 23:35) title
+border
+grestore
+(Printed by root) rhead
+(./iostat.c) (4/5) (Sunday March 27, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(/* Main loop */) c n
+() p 8 T () S
+(for) K
+( \(lineno = 0;; lineno = \(++lineno\) % 21\) {) p n
+() S 8 T () S 16 T (process\(lineno\);) N
+() S 8 T () S 16 T () S
+(if) K
+( \(count > 0\)) p n
+() S 8 T () S 16 T () S 24 T (count--;) N
+() S 8 T () S 16 T () S
+(if) K
+( \(!count\)) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (sleep\(interval\);) N
+() S 8 T (}) N
+() S 8 T (exit\(EXIT_SUCCESS\);) N
+(}) N
+(iostat.c) (Page 9/9) (Mar 26, 05 23:35) title
+border
+grestore
+(Printed by root) rhead
+(./iostat.c) (5/5) (Sunday March 27, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

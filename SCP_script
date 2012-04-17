@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+
+scp -r /cogito/Threaded/ vayu:/root
+scp -r /cogito/Threaded/ vishwamitra:/root
+scp -r /cogito/Threaded/ ganga:/root
+scp -r /cogito/Threaded/ shandilya:/root

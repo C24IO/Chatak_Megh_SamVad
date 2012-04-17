@@ -1,0 +1,1850 @@
+%!PS-Adobe-3.0
+%%Title: blcmdl2_select_tut.txt
+%%For: root
+%%Creator: a2ps version 4.13
+%%CreationDate: Wed Mar 30 11:19:58 2005
+%%BoundingBox: 24 24 588 768
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 7
+%%PageOrder: Ascend
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontType get 0 eq {
+    currentfont /FontMatrix get 3 get
+  }{
+    currentfont /FontMatrix get 3 get 1000 mul
+  } ifelse
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Define these in case they're not in the FontInfo (also, here
+    % they're easier to get to.
+    /UnderlinePosition 1 def
+    /UnderlineThickness 1 def
+    
+    % Get the underline position and thickness if they're defined.
+    currentdict /FontInfo known {
+      FontInfo
+      
+      dup /UnderlinePosition known {
+	dup /UnderlinePosition get
+	0 exch FontMatrix transform exch pop
+	/UnderlinePosition exch def
+      } if
+      
+      dup /UnderlineThickness known {
+	/UnderlineThickness get
+	0 exch FontMatrix transform exch pop
+	/UnderlineThickness exch def
+      } if
+      
+    } if
+    currentdict 
+  end 
+} bind def
+
+% composite fonts for ASCII-EUC mixed strings
+% Version 1.2 1/31/1990
+% Original Ken'ichi HANDA (handa@etl.go.jp)
+% Modified Norio Katayama (katayama@rd.nacsis.ac.jp),1998
+% Extend & Fix Koji Nakamaru (maru@on.cs.keio.ac.jp), 1999
+% Anyone can freely copy, modify, distribute this program.
+
+/copyfont {	% font-dic extra-entry-count  copyfont  font-dic
+	1 index maxlength add dict begin
+	{	1 index /FID ne 2 index /UniqueID ne and
+		{def} {pop pop} ifelse
+	} forall
+	currentdict
+	end
+} bind def
+
+/compositefont { % ASCIIFontName EUCFontName RomanScale RomanOffset Rot(T/F) compositefont font
+    /RomanRotation exch def
+    /RomanOffset exch def
+    /RomanScale exch def
+    userdict /fixeucfont_dict known not {
+	userdict begin
+	    /fixeucfont_dict 2 dict begin
+		/UpperByteEncoding [
+		    16#00 1 16#20 { pop 0 } for
+		    16#21 1 16#28 { 16#20 sub } for
+		    16#29 1 16#2F { pop 0 } for
+		    16#30 1 16#74 { 16#27 sub } for
+		    16#75 1 16#FF { pop 0 } for
+		] def
+	        /LowerByteEncoding [
+		    16#00 1 16#A0 { pop /.notdef } for
+		    16#A1 1 16#FE { 16#80 sub 16 2 string cvrs
+				    (cXX) dup 1 4 -1 roll
+				    putinterval cvn } for
+		    /.notdef
+		] def
+		currentdict
+	    end def
+	end
+    } if
+    findfont dup /FontType get 0 eq {
+	14 dict begin
+	    %
+	    % 7+8 bit EUC font
+	    %
+	    12 dict begin
+		/EUCFont exch def
+		/FontInfo (7+8 bit EUC font) readonly def
+		/PaintType 0 def
+		/FontType 0 def
+		/FontMatrix matrix def
+		% /FontName
+		/Encoding fixeucfont_dict /UpperByteEncoding get def
+		/FMapType 2 def
+		EUCFont /WMode known
+		{ EUCFont /WMode get /WMode exch def }
+		{ /WMode 0 def } ifelse
+		/FDepVector [
+		    EUCFont /FDepVector get 0 get
+		    [ 16#21 1 16#28 {} for 16#30 1 16#74 {} for ]
+		    {
+			13 dict begin
+			    /EUCFont EUCFont def
+			    /UpperByte exch 16#80 add def	
+			    % /FontName
+			    /FontInfo (EUC lower byte font) readonly def
+			    /PaintType 0 def
+			    /FontType 3 def
+			    /FontMatrix matrix def
+			    /FontBBox {0 0 0 0} def
+			    /Encoding
+				fixeucfont_dict /LowerByteEncoding get def
+			    % /UniqueID
+			    % /WMode
+			    /BuildChar {
+				gsave
+				exch dup /EUCFont get setfont
+				/UpperByte get
+				2 string
+				dup 0 4 -1 roll put
+				dup 1 4 -1 roll put
+				dup stringwidth setcharwidth
+				0 0 moveto show
+				grestore
+			    } bind def
+			    currentdict
+			end
+			/lowerbytefont exch definefont
+		    } forall
+		] def
+		currentdict
+	    end
+	    /eucfont exch definefont
+	    exch
+	    findfont 1 copyfont dup begin
+		RomanRotation {
+			/FontMatrix FontMatrix
+			[ 0 RomanScale neg RomanScale 0 RomanOffset neg 0 ]
+			matrix concatmatrix def
+		}{
+			/FontMatrix FontMatrix
+			[ RomanScale 0 0 RomanScale 0 RomanOffset ] matrix concatmatrix
+			def
+			/CDevProc
+			    {pop pop pop pop 0 exch -1000 exch 2 div 880} def
+		} ifelse
+	    end
+	    /asciifont exch definefont
+	    exch
+	    /FDepVector [ 4 2 roll ] def
+	    /FontType 0 def
+	    /WMode 0 def
+	    /FMapType 4 def
+	    /FontMatrix matrix def
+	    /Encoding [0 1] def
+	    /FontBBox {0 0 0 0} def
+%	    /FontHeight 1.0 def % XXXX
+	    /FontHeight RomanScale 1.0 ge { RomanScale }{ 1.0 } ifelse def
+	    /Descent -0.3 def   % XXXX
+	    currentdict
+	end
+	/tmpfont exch definefont
+	pop
+	/tmpfont findfont
+    }{
+	pop findfont 0 copyfont
+    } ifelse
+} def	
+
+/slantfont {	% FontName slant-degree  slantfont  font'
+    exch findfont 1 copyfont begin
+    [ 1 0 4 -1 roll 1 0 0 ] FontMatrix exch matrix concatmatrix
+    /FontMatrix exch def
+    currentdict
+    end
+} def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 612 def
+/sw 792 def
+/llx 24 def
+/urx 768 def
+/ury 588 def
+/lly 24 def
+/#copies 1 def
+/th 15.000000 def
+/fnfs 11 def
+/bfs 7.493857 def
+/cw 4.496314 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 81.400000 mul
+def
+/ph
+   522.321860 th add
+def
+/pmw urx llx sub pw 2 mul sub 1 div def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+  dup pmw add pw add
+] def
+/y [
+  pmh ph add 0 mul ph add
+  dup
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1-2) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(* You are here:*) p n
+(About <http://about.com>>Computing & Technology) N
+(<http://about.com/compute>>Focus on Linux </>) N
+(About.com <http://about.com>) N
+(Home </>) N
+(Essentials <javascript:mN\(1\);>) N
+(Linux Glossary </library/glossary/blglossary.htm>Linux Commands) N
+(</library/cmd/blcmd.htm>Shell Commands </library/cmd/blcmds.htm>Linux) N
+(Newbie Admin. </library/bl/open/newbie/blnewbie_toc.htm>Software) N
+(Top-picks </cs/softoffice/tp/tp_officesuite.htm>) N
+(Linux Offers <javascript:mN\(9\);>) N
+(Unix Command </z/js/o.htm?k=unix%20command&d=Unix%20Command> Unix) N
+(Scripts </z/js/o.htm?k=unix%20scripts&d=Unix%20Scripts> Unix Shared) N
+(Hosting) N
+(</z/js/o.htm?k=unix%20shared%20hosting&d=Unix%20Shared%20Hosting> Unix) N
+(Admin </z/js/o.htm?k=unix%20admin&d=Unix%20Admin> Unix Fax Server) N
+(</z/js/o.htm?k=unix%20fax%20server&d=Unix%20Fax%20Server> What are) N
+(offers? <javascript:zpu\(512,uy+'/z/ad/wao.htm',350,200,'wao',300,180\)>) N
+(Articles & Resources <javascript:mN\(0\);>) N
+(Linux 101 </od/linux101/>Glossaries </od/glossary/>Linux HowTos) N
+(</od/howtos/>Linux / Shell Commands </od/commands/>Linux Distributions) N
+(</od/dist/>Linux Documentation </od/linuxdocumentation/>Linux Software) N
+(</od/soft/>Open Source Issues </od/opensource/>Embedded Linux) N
+(</od/embedded/>Linux / Technology News </od/news/>From Our Readers) N
+(</od/fromreaders/>) N
+(Buyer's Guide <javascript:mN\(2\);>) N
+(Before You Buy </cs/bb.htm>Top Picks </cs/tp.htm>Top 3 Free Office) N
+(Suites for Linux </cs/softoffice/tp/tp_officesuite.htm>Product Reviews) N
+(</cs/gr.htm>) N
+(Articles </cs/a.htm>) N
+(Forums </mpboards.htm>) N
+(Help </gi/pages/hc.htm>) N
+( ) N
+() N
+( ) N
+() N
+() N
+(        FREE Gift) N
+() N
+(with sign up to About's FREE Focus on Linux newsletter! *Limited time) N
+(offer.*) N
+(*See Online Courses <http://u.about.com/>*) N
+() N
+( ) N
+() N
+(  ) S 8 T ( ) S 16 T () N
+(Search) N
+() N
+(Focus on Linux </>) N
+(* Linux / Unix Command: */select_tut/**) N
+(Command Library </library/cmd/blcmdl.htm>) N
+() N
+() N
+(    NAME) N
+() N
+(select, pselect, FD_CLR, FD_ISSET, FD_SET, FD_ZERO - synchronous I/O) N
+(multiplexing  ) N
+() N
+() N
+(    SYNOPSIS) N
+() N
+(*#include <sys/time.h <file:/usr/include/sys/time.h>>*) N
+(*#include <sys/types.h <file:/usr/include/sys/types.h>>*) N
+(*#include <unistd.h <file:/usr/include/unistd.h>>*) N
+() N
+(*int select\(int */n/*, fd_set **/readfds/*,* *fd_set **/writefds/*,) N
+(fd_set **/exceptfds/*,* *struct timeval **/utimeout/*\);*) N
+() N
+(*int pselect\(int */n/*, fd_set **/readfds/*,* *fd_set **/writefds/*,) N
+(blcmdl2_select_tut.txt) (Page 1/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(fd_set **/exceptfds/*,* *const struct timespec **/ntimeout/*, sigset_t) p n
+(**/sigmask/*\);*) N
+() N
+(*FD_CLR\(int */fd/*, fd_set **/set/*\);*) N
+(*FD_ISSET\(int */fd/*, fd_set **/set/*\);*) N
+(*FD_SET\(int */fd/*, fd_set **/set/*\);*) N
+(*FD_ZERO\(fd_set **/set/*\);*  ) N
+() N
+() N
+(    DESCRIPTION) N
+() N
+(*select* \(or *pselect*\) is the pivot function of most C programs that) N
+(handle more than one simultaneous file descriptor \(or socket handle\) in) N
+(an efficient manner. Its principal arguments are three arrays of file) N
+(descriptors: /readfds/, /writefds/, and /exceptfds/. The way that) N
+(*select* is usually used is to block while waiting for a "change of) N
+(status" on one or more of the file descriptors. A "change of status" is) N
+(when more characters become available from the file descriptor; /or/) N
+(when space becomes available within the kernel's internal buffers for) N
+(more to be written to the file descriptor, /or/ when a file descriptor) N
+(goes into error \(in the case of a socket or pipe this is when the other) N
+(end of the connection is closed\).) N
+() N
+(In summary, *select* just watches multiple file descriptors, and is the) N
+(standard Unix call to do so.) N
+() N
+(The arrays of file descriptors are called /file descriptor sets/. Each) N
+(set is declared as type *fd_set*, and its contents can be altered with) N
+(the macros *FD_CLR*, *FD_ISSET*, *FD_SET*, and *FD_ZERO*. *FD_ZERO* is) N
+(usually the first function to be used on a newly declared set.) N
+(Thereafter, the individual file descriptors that you are interested in) N
+(can be added one by one with *FD_SET*. *select* modifies the contents of) N
+(the sets according to the rules described below; after calling *select*) N
+(you can test if your file descriptor is still present in the set with) N
+(the *FD_ISSET* macro. *FD_ISSET* returns non-zero if the descriptor is) N
+(present and zero if it is not. *FD_CLR* removes a file descriptor from) N
+(the set although I can't see the use for it in a clean program.) N
+() N
+( ) N
+() N
+() N
+(    ARGUMENTS) N
+() N
+(/readfds/) N
+(    This set is watched to see if data is available for reading from any) N
+(    of its file descriptors. After *select* has returned, /readfds/ will) N
+(    be cleared of all file descriptors except for those file descriptors) N
+(    that are immediately available for reading with a *recv\(\)* \(for) N
+(    sockets\) or *read\(\)* \(for pipes, files, and sockets\) call. ) N
+(/writefds/) N
+(    This set is watched to see if there is space to write data to any of) N
+(    its file descriptor. After *select* has returned, /writefds/ will be) N
+(    cleared of all file descriptors except for those file descriptors) N
+(    that are immediately available for writing with a *send\(\)* \(for) N
+(    sockets\) or *write\(\)* \(for pipes, files, and sockets\) call. ) N
+(/exceptfds/) N
+(    This set is watched for exceptions or errors on any of the file) N
+(    descriptors. However, that is actually just a rumor. How you use) N
+(    /exceptfds/ is to watch for /Out of Bounds/ \(OOB\) data. OOB data is) N
+(    data sent on a socket using the *MSG_OOB* flag, and hence) N
+(    /exceptfds/ only really applies to sockets. See *recv) N
+(    </library/cmd/blcmdl2_recv.htm>*\(2\) and *send) N
+(    </library/cmd/blcmdl2_send.htm>*\(2\) about this. After *select* has) N
+(    returned, /exceptfds/ will be cleared of all file descriptors except) N
+(    for those descriptors that are available for reading OOB data. You) N
+(    can only ever read one byte of OOB data though \(which is done with) N
+(    *recv\(\)*\), and writing OOB data \(done with *send*\) can be done at) N
+(    any time and will not block. Hence there is no need for a fourth set) N
+(    to check if a socket is available for writing OOB data. ) N
+(blcmdl2_select_tut.txt) (Page 2/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (1/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3-4) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/n/) p n
+(    This is an integer one more than the maximum of any file descriptor) N
+(    in any of the sets. In other words, while you are busy adding file) N
+(    descriptors to your sets, you must calculate the maximum integer) N
+(    value of all of them, then increment this value by one, and then) N
+(    pass this as /n/ to *select*. ) N
+(/utimeout/) N
+() N
+(        This is the longest time *select* must wait before returning,) N
+(        even if nothing interesting happened. If this value is passed as) N
+(        *NULL*, then *select* blocks indefinitely waiting for an event.) N
+(        /utimeout/ can be set to zero seconds, which causes *select* to) N
+(        return immediately. The structure *struct timeval* is defined as,) N
+() N
+(struct timeval {) N
+(    time_t tv_sec;    /* seconds */) N
+(    long tv_usec;     /* microseconds */) N
+(};) N
+() N
+(/ntimeout/) N
+() N
+(        This argument has the same meaning as /utimeout/ but *struct) N
+(        timespec* has nanosecond precision as follows,) N
+() N
+(struct timespec {) N
+(    long tv_sec;    /* seconds */) N
+(    long tv_nsec;   /* nanoseconds */) N
+(};) N
+() N
+(/sigmask/) N
+(    This argument holds a set of signals to allow while performing a) N
+(    *pselect* call \(see *sigaddset) N
+(    </library/cmd/blcmdl3_sigaddset.htm>*\(3\) and *sigprocmask) N
+(    </library/cmd/blcmdl2_sigprocmask.htm>*\(2\)\). It can be passed as) N
+(    NULL, in which case it does not modify the set of allowed signals on) N
+(    entry and exit to the function. It will then behave just like *select*.) N
+() N
+( ) N
+() N
+() N
+(    COMBINING SIGNAL AND DATA EVENTS) N
+() N
+(*pselect* must be used if you are waiting for a signal as well as data) N
+(from a file descriptor. Programs that receive signals as events normally) N
+(use the signal handler only to raise a global flag. The global flag will) N
+(indicate that the event must be processed in the main loop of the) N
+(program. A signal will cause the *select* \(or *pselect*\) call to return) N
+(with *errno* set to *EINTR*. This behavior is essential so that signals) N
+(can be processed in the main loop of the program, otherwise *select*) N
+(would block indefinitely. Now, somewhere in the main loop will be a) N
+(conditional to check the global flag. So we must ask: what if a signal) N
+(arrives after the conditional, but before the *select* call? The answer) N
+(is that *select* would block indefinitely, even though an event is) N
+(actually pending. This race condition is solved by the *pselect* call.) N
+(This call can be used to mask out signals that are not to be received) N
+(except within the *pselect* call. For instance, let us say that the) N
+(event in question was the exit of a child process. Before the start of) N
+(the main loop, we would block *SIGCHLD* using *sigprocmask*. Our) N
+(*pselect* call would enable *SIGCHLD* by using the virgin signal mask.) N
+(Our program would look like:) N
+() N
+(int child_events = 0;) N
+() N
+(void child_sig_handler \(int x\) {) N
+(    child_events++;) N
+(    signal \(SIGCHLD, child_sig_handler\);) N
+(}) N
+() N
+(int main \(int argc, char **argv\) {) N
+(blcmdl2_select_tut.txt) (Page 3/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    sigset_t sigmask, orig_sigmask;) p n
+() N
+(    sigemptyset \(&sigmask\);) N
+(    sigaddset \(&sigmask, SIGCHLD\);) N
+(    sigprocmask \(SIG_BLOCK, &sigmask,) N
+(                                &orig_sigmask\);) N
+() N
+(    signal \(SIGCHLD, child_sig_handler\);) N
+() N
+(    for \(;;\) { /* main loop */) N
+(        for \(; child_events > 0; child_events--\) {) N
+(            /* do event work here */) N
+(        }) N
+(        r = pselect \(n, &rd, &wr, &er, 0, &orig_sigmask\);) N
+() N
+(        /* main body of program */) N
+(    }) N
+(}) N
+() N
+(Note that the above *pselect* call can be replaced with:) N
+() N
+(        sigprocmask \(SIG_BLOCK, &orig_sigmask, 0\);) N
+(        r = select \(n, &rd, &wr, &er, 0\);) N
+(        sigprocmask \(SIG_BLOCK, &sigmask, 0\);) N
+() N
+(but then there is still the possibility that a signal could arrive after) N
+(the first *sigprocmask* and before the *select*. If you do do this, it) N
+(is prudent to at least put a finite timeout so that the process does not) N
+(block. At present glibc probably works this way. The Linux kernel does) N
+(not have a native *pselect* system call as yet so this is all probably) N
+(much of a mute point.) N
+() N
+( ) N
+() N
+() N
+(    PRACTICAL) N
+() N
+(So what is the point of *select*? Can't I just read and write to my) N
+(descriptors whenever I want? The point of select is that it watches) N
+(multiple descriptors at the same time and properly puts the process to) N
+(sleep if there is no activity. It does this while enabling you to handle) N
+(multiple simultaneous pipes and sockets. Unix programmers often find) N
+(themselves in a position where they have to handle IO from more than one) N
+(file descriptor where the data flow may be intermittent. If you were to) N
+(merely create a sequence of *read* and *write* calls, you would find) N
+(that one of your calls may block waiting for data from/to a file) N
+(descriptor, while another file descriptor is unused though available for) N
+(data. *select* efficiently copes with this situation.) N
+() N
+(A classic example of *select* comes from the *select* man page:) N
+() N
+(#include <stdio.h <file:/usr/include/stdio.h>>) N
+(#include <sys/time.h <file:/usr/include/sys/time.h>>) N
+(#include <sys/types.h <file:/usr/include/sys/types.h>>) N
+(#include <unistd.h <file:/usr/include/unistd.h>>) N
+() N
+(int) N
+(main\(void\) {) N
+(    fd_set rfds;) N
+(    struct timeval tv;) N
+(    int retval;) N
+() N
+(    /* Watch stdin \(fd 0\) to see when it has input. */) N
+(    FD_ZERO\(&rfds\);) N
+(    FD_SET\(0, &rfds\);) N
+(    /* Wait up to five seconds. */) N
+(    tv.tv_sec = 5;) N
+(    tv.tv_usec = 0;) N
+() N
+(blcmdl2_select_tut.txt) (Page 4/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (2/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5-6) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    retval = select\(1, &rfds, NULL, NULL, &tv\);) p n
+(    /* Don't rely on the value of tv now! */) N
+() N
+(    if \(retval\)) N
+(        printf\("Data is available now.\\n"\);) N
+(        /* FD_ISSET\(0, &rfds\) will be true. */) N
+(    else) N
+(        printf\("No data within five seconds.\\n"\);) N
+() N
+(    exit\(0\);) N
+(}) N
+() N
+( ) N
+() N
+() N
+(    PORT FORWARDING EXAMPLE) N
+() N
+(Here is an example that better demonstrates the true utility of) N
+(*select*. The listing below a TCP forwarding program that forwards from) N
+(one TCP port to another.) N
+() N
+(#include <stdlib.h <file:/usr/include/stdlib.h>>) N
+(#include <stdio.h <file:/usr/include/stdio.h>>) N
+(#include <unistd.h <file:/usr/include/unistd.h>>) N
+(#include <sys/time.h <file:/usr/include/sys/time.h>>) N
+(#include <sys/types.h <file:/usr/include/sys/types.h>>) N
+(#include <string.h <file:/usr/include/string.h>>) N
+(#include <signal.h <file:/usr/include/signal.h>>) N
+(#include <sys/socket.h <file:/usr/include/sys/socket.h>>) N
+(#include <netinet/in.h <file:/usr/include/netinet/in.h>>) N
+(#include <arpa/inet.h <file:/usr/include/arpa/inet.h>>) N
+(#include <errno.h <file:/usr/include/errno.h>>) N
+() N
+(static int forward_port;) N
+() N
+(#undef max) N
+(#define max\(x,y\) \(\(x\) > \(y\) ? \(x\) : \(y\)\)) N
+() N
+(static int listen_socket \(int listen_port\) {) N
+(    struct sockaddr_in a;) N
+(    int s;) N
+(    int yes;) N
+(    if \(\(s = socket \(AF_INET, SOCK_STREAM, 0\)\) < 0\) {) N
+(        perror \("socket"\);) N
+(        return -1;) N
+(    }) N
+(    yes = 1;) N
+(    if \(setsockopt) N
+(        \(s, SOL_SOCKET, SO_REUSEADDR,) N
+(         \(char *\) &yes, sizeof \(yes\)\) < 0\) {) N
+(        perror \("setsockopt"\);) N
+(        close \(s\);) N
+(        return -1;) N
+(    }) N
+(    memset \(&a, 0, sizeof \(a\)\);) N
+(    a.sin_port = htons \(listen_port\);) N
+(    a.sin_family = AF_INET;) N
+(    if \(bind) N
+(        \(s, \(struct sockaddr *\) &a, sizeof \(a\)\) < 0\) {) N
+(        perror \("bind"\);) N
+(        close \(s\);) N
+(        return -1;) N
+(    }) N
+(    printf \("accepting connections on port %d\\n",) N
+(            \(int\) listen_port\);) N
+(    listen \(s, 10\);) N
+(    return s;) N
+(}) N
+() N
+(blcmdl2_select_tut.txt) (Page 5/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(static int connect_socket \(int connect_port,) p n
+(                           char *address\) {) N
+(    struct sockaddr_in a;) N
+(    int s;) N
+(    if \(\(s = socket \(AF_INET, SOCK_STREAM, 0\)\) < 0\) {) N
+(        perror \("socket"\);) N
+(        close \(s\);) N
+(        return -1;) N
+(    }) N
+() N
+(    memset \(&a, 0, sizeof \(a\)\);) N
+(    a.sin_port = htons \(connect_port\);) N
+(    a.sin_family = AF_INET;) N
+() N
+(    if \(!inet_aton) N
+(        \(address,) N
+(         \(struct in_addr *\) &a.sin_addr.s_addr\)\) {) N
+(        perror \("bad IP address format"\);) N
+(        close \(s\);) N
+(        return -1;) N
+(    }) N
+() N
+(    if \(connect) N
+(        \(s, \(struct sockaddr *\) &a,) N
+(         sizeof \(a\)\) < 0\) {) N
+(        perror \("connect\(\)"\);) N
+(        shutdown \(s, SHUT_RDWR\);) N
+(        close \(s\);) N
+(        return -1;) N
+(    }) N
+(    return s;) N
+(}) N
+() N
+(#define SHUT_FD1 {                      \\) N
+(        if \(fd1 >= 0\) {                 \\) N
+(            shutdown \(fd1, SHUT_RDWR\);  \\) N
+(            close \(fd1\);                \\) N
+(            fd1 = -1;                   \\) N
+(        }                               \\) N
+(    }) N
+() N
+(#define SHUT_FD2 {                      \\) N
+(        if \(fd2 >= 0\) {                 \\) N
+(            shutdown \(fd2, SHUT_RDWR\);  \\) N
+(            close \(fd2\);                \\) N
+(            fd2 = -1;                   \\) N
+(        }                               \\) N
+(    }) N
+() N
+(#define BUF_SIZE 1024) N
+() N
+(int main \(int argc, char **argv\) {) N
+(    int h;) N
+(    int fd1 = -1, fd2 = -1;) N
+(    char buf1[BUF_SIZE], buf2[BUF_SIZE];) N
+(    int buf1_avail, buf1_written;) N
+(    int buf2_avail, buf2_written;) N
+() N
+(    if \(argc != 4\) {) N
+(        fprintf \(stderr,) N
+(                 "Usage\\n\\tfwd <listen-port> \\) N
+(<forward-to-port> <forward-to-ip-address>\\n"\);) N
+(        exit \(1\);) N
+(    }) N
+() N
+(    signal \(SIGPIPE, SIG_IGN\);) N
+() N
+(    forward_port = atoi \(argv[2]\);) N
+() N
+(blcmdl2_select_tut.txt) (Page 6/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (3/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7-8) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    h = listen_socket \(atoi \(argv[1]\)\);) p n
+(    if \(h < 0\)) N
+(        exit \(1\);) N
+() N
+(    for \(;;\) {) N
+(        int r, n = 0;) N
+(        fd_set rd, wr, er;) N
+(        FD_ZERO \(&rd\);) N
+(        FD_ZERO \(&wr\);) N
+(        FD_ZERO \(&er\);) N
+(        FD_SET \(h, &rd\);) N
+(        n = max \(n, h\);) N
+(        if \(fd1 > 0 && buf1_avail < BUF_SIZE\) {) N
+(            FD_SET \(fd1, &rd\);) N
+(            n = max \(n, fd1\);) N
+(        }) N
+(        if \(fd2 > 0 && buf2_avail < BUF_SIZE\) {) N
+(            FD_SET \(fd2, &rd\);) N
+(            n = max \(n, fd2\);) N
+(        }) N
+(        if \(fd1 > 0) N
+(            && buf2_avail - buf2_written > 0\) {) N
+(            FD_SET \(fd1, &wr\);) N
+(            n = max \(n, fd1\);) N
+(        }) N
+(        if \(fd2 > 0) N
+(            && buf1_avail - buf1_written > 0\) {) N
+(            FD_SET \(fd2, &wr\);) N
+(            n = max \(n, fd2\);) N
+(        }) N
+(        if \(fd1 > 0\) {) N
+(            FD_SET \(fd1, &er\);) N
+(            n = max \(n, fd1\);) N
+(        }) N
+(        if \(fd2 > 0\) {) N
+(            FD_SET \(fd2, &er\);) N
+(            n = max \(n, fd2\);) N
+(        }) N
+() N
+(        r = select \(n + 1, &rd, &wr, &er, NULL\);) N
+() N
+(        if \(r == -1 && errno == EINTR\)) N
+(            continue;) N
+(        if \(r < 0\) {) N
+(            perror \("select\(\)"\);) N
+(            exit \(1\);) N
+(        }) N
+(        if \(FD_ISSET \(h, &rd\)\) {) N
+(            unsigned int l;) N
+(            struct sockaddr_in client_address;) N
+(            memset \(&client_address, 0, l =) N
+(                    sizeof \(client_address\)\);) N
+(            r = accept \(h, \(struct sockaddr *\)) N
+(                        &client_address, &l\);) N
+(            if \(r < 0\) {) N
+(                perror \("accept\(\)"\);) N
+(            } else {) N
+(                SHUT_FD1;) N
+(                SHUT_FD2;) N
+(                buf1_avail = buf1_written = 0;) N
+(                buf2_avail = buf2_written = 0;) N
+(                fd1 = r;) N
+(                fd2 =) N
+(                    connect_socket \(forward_port,) N
+(                                    argv[3]\);) N
+(                if \(fd2 < 0\) {) N
+(                    SHUT_FD1;) N
+(                } else) N
+(                    printf \("connect from %s\\n",) N
+(blcmdl2_select_tut.txt) (Page 7/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(                            inet_ntoa) p n
+(                            \(client_address.sin_addr\)\);) N
+(            }) N
+(        }) N
+(/* NB: read oob data before normal reads */) N
+(        if \(fd1 > 0\)) N
+(            if \(FD_ISSET \(fd1, &er\)\) {) N
+(                char c;) N
+(                errno = 0;) N
+(                r = recv \(fd1, &c, 1, MSG_OOB\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD1;) N
+(                } else) N
+(                    send \(fd2, &c, 1, MSG_OOB\);) N
+(            }) N
+(        if \(fd2 > 0\)) N
+(            if \(FD_ISSET \(fd2, &er\)\) {) N
+(                char c;) N
+(                errno = 0;) N
+(                r = recv \(fd2, &c, 1, MSG_OOB\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD1;) N
+(                } else) N
+(                    send \(fd1, &c, 1, MSG_OOB\);) N
+(            }) N
+(        if \(fd1 > 0\)) N
+(            if \(FD_ISSET \(fd1, &rd\)\) {) N
+(                r =) N
+(                    read \(fd1, buf1 + buf1_avail,) N
+(                          BUF_SIZE - buf1_avail\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD1;) N
+(                } else) N
+(                    buf1_avail += r;) N
+(            }) N
+(        if \(fd2 > 0\)) N
+(            if \(FD_ISSET \(fd2, &rd\)\) {) N
+(                r =) N
+(                    read \(fd2, buf2 + buf2_avail,) N
+(                          BUF_SIZE - buf2_avail\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD2;) N
+(                } else) N
+(                    buf2_avail += r;) N
+(            }) N
+(        if \(fd1 > 0\)) N
+(            if \(FD_ISSET \(fd1, &wr\)\) {) N
+(                r =) N
+(                    write \(fd1,) N
+(                           buf2 + buf2_written,) N
+(                           buf2_avail -) N
+(                           buf2_written\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD1;) N
+(                } else) N
+(                    buf2_written += r;) N
+(            }) N
+(        if \(fd2 > 0\)) N
+(            if \(FD_ISSET \(fd2, &wr\)\) {) N
+(                r =) N
+(                    write \(fd2,) N
+(                           buf1 + buf1_written,) N
+(                           buf1_avail -) N
+(                           buf1_written\);) N
+(                if \(r < 1\) {) N
+(                    SHUT_FD2;) N
+(                } else) N
+(                    buf1_written += r;) N
+(            }) N
+(blcmdl2_select_tut.txt) (Page 8/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (4/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9-10) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/* check if write data has caught read data */) p n
+(        if \(buf1_written == buf1_avail\)) N
+(            buf1_written = buf1_avail = 0;) N
+(        if \(buf2_written == buf2_avail\)) N
+(            buf2_written = buf2_avail = 0;) N
+(/* one side has closed the connection, keep) N
+(   writing to the other side until empty */) N
+(        if \(fd1 < 0) N
+(            && buf1_avail - buf1_written == 0\) {) N
+(            SHUT_FD2;) N
+(        }) N
+(        if \(fd2 < 0) N
+(            && buf2_avail - buf2_written == 0\) {) N
+(            SHUT_FD1;) N
+(        }) N
+(    }) N
+(    return 0;) N
+(}) N
+() N
+(The above program properly forwards most kinds of TCP connections) N
+(including OOB signal data transmitted by *telnet* servers. It handles) N
+(the tricky problem of having data flow in both directions) N
+(simultaneously. You might think it more efficient to use a *fork\(\)* call) N
+(and devote a thread to each stream. This becomes more tricky than you) N
+(might suspect. Another idea is to set non-blocking IO using an *ioctl\(\)*) N
+(call. This also has its problems because you end up having to have) N
+(inefficient timeouts.) N
+() N
+(The program does not handle more than one simultaneous connection at a) N
+(time, although it could easily be extended to do this with a linked list) N
+(of buffers - one for each connection. At the moment, new connections) N
+(cause the current connection to be dropped.) N
+() N
+( ) N
+() N
+() N
+(    SELECT LAW) N
+() N
+(Many people who try to use *select* come across behavior that is) N
+(difficult to understand and produces non-portable or borderline results.) N
+(For instance, the above program is carefully written not to block at any) N
+(point, even though it does not set its file descriptors to non-blocking) N
+(mode at all \(see *ioctl </library/cmd/blcmdl2_ioctl.htm>*\(2\)\). It is) N
+(easy to introduce subtle errors that will remove the advantage of using) N
+(*select*, hence I will present a list of essentials to watch for when) N
+(using the *select* call.) N
+() N
+(*1.*) N
+(    You should always try use *select* without a timeout. Your program) N
+(    should have nothing to do if there is no data available. Code that) N
+(    depends on timeouts is not usually portable and difficult to debug. ) N
+(*2.*) N
+(    The value /n/ must be properly calculated for efficiency as) N
+(    explained above. ) N
+(*3.*) N
+(    No file descriptor must be added to any set if you do not intend to) N
+(    check its result after the *select* call, and respond appropriately.) N
+(    See next rule. ) N
+(*4.*) N
+(    After *select* returns, all file descriptors in all sets /must/ be) N
+(    checked. Any file descriptor that is available for writing /must/ be) N
+(    written to, and any file descriptor available for reading /must/ be) N
+(    read, etc. ) N
+(*5.*) N
+(    The functions *read\(\)*, *recv\(\)*, *write\(\)*, and *send\(\)* do /not/) N
+(    necessarily read/write the full amount of data that you have) N
+(    requested. If they do read/write the full amount, its because you) N
+(    have a low traffic load and a fast stream. This is not always going) N
+(    to be the case. You should cope with the case of your functions only) N
+(blcmdl2_select_tut.txt) (Page 9/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    managing to send or receive a single byte. ) p n
+(*6.*) N
+(    Never read/write only in single bytes at a time unless your are) N
+(    really sure that you have a small amount of data to process. It is) N
+(    extremely inefficient not to read/write as much data as you can) N
+(    buffer each time. The buffers in the example above are 1024 bytes) N
+(    although they could easily be made as large as the maximum possible) N
+(    packet size on your local network. ) N
+(*7.*) N
+(    The functions *read\(\)*, *recv\(\)*, *write\(\)*, and *send\(\)* as well as) N
+(    the *select\(\)* call can return -1 with an errno of *EINTR* or) N
+(    *EAGAIN* \(*EWOULDBLOCK*\) which are not errors. These results must be) N
+(    properly managed \(not done properly above\). If your program is not) N
+(    going to receive any signals then it is unlikely you will get) N
+(    *EINTR*. If your program does not set non-blocking IO, you will not) N
+(    get *EAGAIN*. Nonetheless you should still cope with these errors) N
+(    for completeness. ) N
+(*8.*) N
+(    Never call *read\(\)*, *recv\(\)*, *write\(\)*, or *send\(\)* with a buffer) N
+(    length of zero. ) N
+(*9.*) N
+(    Except as indicated in *7.*, the functions *read\(\)*, *recv\(\)*,) N
+(    *write\(\)*, and *send\(\)* never have a return value less than 1 except) N
+(    if an error has occurred. For instance, a *read\(\)* on a pipe where) N
+(    the other end has died returns zero \(so does an end-of-file error\),) N
+(    /but/ only returns zero once \(a followup read or write will return) N
+(    -1\). Should any of these functions return 0 or -1, you should /not/) N
+(    pass that descriptor to select ever again. In the above example, I) N
+(    close the descriptor immediately, and then set it to -1 to prevent) N
+(    it being included in a set. ) N
+(*10.*) N
+(    The timeout value must be initialized with each new call to) N
+(    *select*, since some operating systems modify the structure.) N
+(    *pselect* however does not modify its timeout structure. ) N
+(*11.*) N
+(    I have heard that the Windows socket layer does not cope with OOB) N
+(    data properly. It also does not cope with *select* calls when no) N
+(    file descriptors are set at all. Having no file descriptors set is a) N
+(    useful way to sleep the process with sub-second precision by using) N
+(    the timeout. \(See further on.\)) N
+() N
+( ) N
+() N
+() N
+(    USLEEP EMULATION) N
+() N
+(On systems that do not have a *usleep* function, you can call *select*) N
+(with a finite timeout and no file descriptors as follows:) N
+() N
+(    struct timeval tv;) N
+(    tv.tv_sec = 0;) N
+(    tv.tv_usec = 200000;  /* 0.2 seconds */) N
+(    select \(0, NULL, NULL, NULL, &tv\);) N
+() N
+(This is only guarenteed to work on Unix systems, however.) N
+() N
+( ) N
+() N
+() N
+(    RETURN VALUE) N
+() N
+(On success, *select* returns the total number of file descriptors still) N
+(present in the file descriptor sets.) N
+() N
+(If *select* timed out, then the file descriptors sets should be all) N
+(empty \(but may not be on some systems\). However the return value will) N
+(definitely be zero.) N
+() N
+(A return value of -1 indicates an error, with *errno* being set) N
+(blcmdl2_select_tut.txt) (Page 10/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (5/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (11-12) 6
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(appropriately. In the case of an error, the returned sets and the) p n
+(timeout struct contents are undefined and should not be used. *pselect*) N
+(however never modifies /ntimeout/.) N
+() N
+( ) N
+() N
+() N
+(    ERRORS) N
+() N
+(*EBADF*) N
+(    A set contained an invalid file descriptor. This error often occurs) N
+(    when you add a file descriptor to a set that you have already issued) N
+(    a *close* on, or when that file descriptor has experienced some kind) N
+(    of error. Hence you should cease adding to sets any file descriptor) N
+(    that returns an error on reading or writing. ) N
+(*EINTR*) N
+(    An interrupting signal was caught like *SIGINT* or *SIGCHLD* etc. In) N
+(    this case you should rebuild your file descriptor sets and retry. ) N
+(*EINVAL*) N
+(    Occurs if /n/ is negative. ) N
+(*ENOMEM*) N
+(    Internal memory allocation failure.) N
+() N
+( ) N
+() N
+() N
+(    SEE ALSO) N
+() N
+(*accept </library/cmd/blcmdl2_accept.htm>*\(2\), *connect) N
+(</library/cmd/blcmdl2_connect.htm>*\(2\), *ioctl) N
+(</library/cmd/blcmdl2_ioctl.htm>*\(2\), *poll) N
+(</library/cmd/blcmdl2_poll.htm>*\(2\), *read) N
+(</library/cmd/blcmdl2_read.htm>*\(2\), *recv) N
+(</library/cmd/blcmdl2_recv.htm>*\(2\), *select) N
+(</library/cmd/blcmdl2_select.htm>*\(2\), *send) N
+(</library/cmd/blcmdl2_send.htm>*\(2\), *sigaddset) N
+(</library/cmd/blcmdl3_sigaddset.htm>*\(3\), *sigdelset) N
+(</library/cmd/blcmdl3_sigdelset.htm>*\(3\), *sigemptyset) N
+(</library/cmd/blcmdl3_sigemptyset.htm>*\(3\), *sigfillset) N
+(</library/cmd/blcmdl3_sigfillset.htm>*\(3\), *sigismember) N
+(</library/cmd/blcmdl3_sigismember.htm>*\(3\), *sigprocmask) N
+(</library/cmd/blcmdl2_sigprocmask.htm>*\(2\), *write) N
+(</library/cmd/blcmdl2_write.htm>*\(2\)) N
+() N
+( ) N
+() N
+(------------------------------------------------------------------------) N
+() N
+(*Important:* Use the /man/ command \(/% man/\) to see how a command is) N
+(used on your particular computer.) N
+() N
+(*>> Linux/Unix Command Library* <blcmdl.htm>) N
+() N
+(*>> Shell Command Library* <blcmd.htm>) N
+() N
+(Your Guide, Juergen Haas </mbiopage.htm>) S 48 T (From Juergen Haas </mbiopage.htm) N
+(>,) N
+(Your Guide to Focus on Linux </>.) N
+(FREE GIFT with Newsletter! Act Now! </gi/pages/mmail.htm>) N
+() N
+() N
+(          Sponsored Links) N
+() N
+(PowerBatchBuild Automation for PowerBuilderpowerbatch.com) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BmS710DlKQtbYMM6OaLqG5) N
+(eYB-ZH-BJX32YwBwI23AYDxBBAEGAQgqKX3ASgGQLQSSMs5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51e) N
+(C5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc) N
+(2VsZWN0X3R1dC5odG0&num=4&adurl=http://sqlbatch.com/pbc/&client=ca-primedia-premi) N
+(um_js>) N
+(blcmdl2_select_tut.txt) (Page 11/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(Telnet Information GuideDirectory On Telnet Services Cost Effective,) N
+(Free Trialwww.searchthis.ws) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BjXoX0DlKQtbYMM6OaLqG5) N
+(eYBx5DxBuvx_ZIBwI23AdCGAxAFGAUgqKX3ASgGQLQSSMg5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51e) N
+(C5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc) N
+(2VsZWN0X3R1dC5odG0&num=5&adurl=http://www.searchthis.ws/topics/telnet.aspx%3Fsou) N
+(rce%3D2&client=ca-primedia-premium_js>) N
+() N
+(HPS WinTailUltimate Windows port of Unix tail. Highlighting, filters,) N
+(and more.www.highplains.net) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BdpyX0DlKQtbYMM6OaLqG5) N
+(eYBlPj9Bo6jr5EBwI23AdCGAxAGGAYgqKX3ASgGQLQSSJ85qgEOcHJpbWVkaWFfbGludXiyAQ9saW51e) N
+(C5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc) N
+(2VsZWN0X3R1dC5odG0&num=6&adurl=http://www.highplains.net/wintail.html&client=ca-) N
+(primedia-premium_js>) N
+() N
+() S 8 T () N
+() N
+() N
+(          Sponsored Links) N
+() N
+(LinuxQuestions.org WikiThe LQ Wiki is a completely free collaborative) N
+(Linux knowledgebasewiki.linuxquestions.org) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BlsoZ0DlKQtbYMM6OaLqG5) N
+(eYB28fcB7PRtI4BwI23AeDUAxABGAEgqKX3ASgGQLQSSK45qgEOcHJpbWVkaWFfbGludXiyAQ9saW51e) N
+(C5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc) N
+(2VsZWN0X3R1dC5odG0&num=1&adurl=http://wiki.linuxquestions.org/&client=ca-primedi) N
+(a-premium_js>) N
+() N
+(Zip Command Line448 bit Encryption, Compression Secure E-mail, Free) N
+(Trialwww.cypherix.com/file_encryption) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?adurl=http://www.cypherix.com/) N
+(encrypt_command_line_files.htm&sa=l&ai=BBbiK0DlKQtbYMM6OaLqG5eYB-LjaB9iGg50BwI23) N
+(AdCGAxACGAIgqKX3ASgGQLQSSKU5oAHxzML_A6oBDnByaW1lZGlhX2xpbnV4sgEPbGludXguYWJvdXQu) N
+(Y29tyAEB2gE5aHR0cDovL2xpbnV4LmFib3V0LmNvbS9saWJyYXJ5L2NtZC9ibGNtZGwyX3NlbGVjdF90) N
+(dXQuaHRt&num=2&client=ca-primedia-premium_js>) N
+() N
+(Telnet InformationTelnet Solutions. Read Product Reviews And Compare) N
+(Priceswww.advancedwebsearch.com) N
+(<http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BS2co0DlKQtbYMM6OaLqG5) N
+(eYBxKSMCdTr5bgBwI23AdCGAxADGAMgqKX3ASgGQLQSSIY5qgEOcHJpbWVkaWFfbGludXiyAQ9saW51e) N
+(C5hYm91dC5jb23IAQHaATlodHRwOi8vbGludXguYWJvdXQuY29tL2xpYnJhcnkvY21kL2JsY21kbDJfc) N
+(2VsZWN0X3R1dC5odG0&num=3&adurl=http://www.advancedwebsearch.com/result.aspx%3Fke) N
+(yword%3Dtelnet%26orig%3D300&client=ca-primedia-premium_js>) N
+() N
+(Advertisement) N
+() N
+() N
+(          Most Popular) N
+() N
+(Linux Commands - Command Library - Man Pages) N
+(<http://linux.about.com/od/commands/l/blcmdl.htm>Linux Commands and) N
+(Shell Commands Libraries) N
+(<http://linux.about.com/od/commands/l/blcmd.htm>Shell Commands Libraries) N
+(- Linux Unix <http://linux.about.com/od/commands/l/blcmds.htm>find -) N
+(Linux Command - Unix Command) N
+(<http://linux.about.com/od/commands/l/blcmdl1_find.htm>Linux Newbie) N
+(Administrator Guide <http://linux.about.com/od/embedded/l/blnewbie_toc.htm>) N
+() N
+() N
+(          What's Hot) N
+() N
+(Linux FAQ - Networking) N
+(<http://linux.about.com/od/linux101/l/blnewbie4_5_5.htm>Fonts 101 -- A) N
+(Quick Introduction to Fonts) N
+(<http://linux.about.com/od/howtos/l/blfont2.htm>fork - Linux Command -) N
+(Unix Command <http://linux.about.com/od/commands/l/blcmdl2_fork.htm>sudo) N
+(- Linux Command - Unix Command) N
+(blcmdl2_select_tut.txt) (Page 12/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (6/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (13-14) 7
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(<http://linux.about.com/od/commands/l/blcmdl8_sudo.htm>mkinitrd - Linux) p n
+(Command - Unix Command) N
+(<http://linux.about.com/od/commands/l/blcmdl8_mkinitr.htm>) N
+() N
+( ) S 8 T ( ) S 16 T (Topic Index </c/a.htm> | </gi/pages/stay.htm> |) N
+(</gi/pages/stay.htm#Y>) S 24 T (back to top <#top>) N
+(email to a friend) N
+(</gi/pages/shareurl.htm?PG=http://linux.about.com/library/cmd/blcmdl2_select_tut) N
+(.htm&zItl=> email) N
+(to a friend) N
+(</gi/pages/shareurl.htm?PG=http://linux.about.com/library/cmd/blcmdl2_select_tut) N
+(.htm&zItl=>   decrease) N
+(font size <javascript:cF\(-1,0\);> increase font size) N
+(<javascript:cF\(1,0\);> font size) S 32 T (About.com <http://about.com/>) N
+() N
+(Our Story <http://ourstory.about.com/> | Be a Guide) N
+(<http://beaguide.about.com/> | Advertising Info) N
+(<http://beanadvertiser.about.com/> | Work at About) N
+(<http://jobs.about.com/> | Site Map) N
+(<http://spiderbites.about.com/sitemap.htm> | Icons) N
+(<http://about.com/i.htm> | Help </gi/pages/hc.htm>) N
+(\2512005 About, Inc. All rights reserved.) N
+(User Agreement </gi/pages/uagree.htm> | Patent Info.) N
+(<http://about.com/gi/pages/patent.htm> | Privacy Policy) N
+(</gi/pages/mprivacy.htm> | Kids' Privacy Policy) N
+(</gi/pages/mprivacy.htm#kids>) N
+() N
+() N
+(          Most Popular) N
+() N
+(Linux Commands - Command Library - Man Pages) N
+(<http://linux.about.com/od/commands/l/blcmdl.htm>Linux Commands and) N
+(Shell Commands Libraries) N
+(<http://linux.about.com/od/commands/l/blcmd.htm>Shell Commands Libraries) N
+(- Linux Unix <http://linux.about.com/od/commands/l/blcmds.htm>find -) N
+(Linux Command - Unix Command) N
+(<http://linux.about.com/od/commands/l/blcmdl1_find.htm>Linux Newbie) N
+(Administrator Guide <http://linux.about.com/od/embedded/l/blnewbie_toc.htm>) N
+() N
+() N
+(          What's Hot) N
+() N
+(Linux FAQ - Networking) N
+(<http://linux.about.com/od/linux101/l/blnewbie4_5_5.htm>Fonts 101 -- A) N
+(Quick Introduction to Fonts) N
+(<http://linux.about.com/od/howtos/l/blfont2.htm>fork - Linux Command -) N
+(Unix Command <http://linux.about.com/od/commands/l/blcmdl2_fork.htm>sudo) N
+(- Linux Command - Unix Command) N
+(<http://linux.about.com/od/commands/l/blcmdl8_sudo.htm>mkinitrd - Linux) N
+(Command - Unix Command) N
+(<http://linux.about.com/od/commands/l/blcmdl8_mkinitr.htm>) N
+() N
+() N
+(          Related Topics) N
+() N
+(PC Hardware / Reviews <http://compreviews.about.com>Focus on Windows) N
+(<http://windows.about.com>Focus on Macs <http://macs.about.com>Focus on) N
+(Unix <http://unix.about.com>Computer Certification) N
+(<http://certification.about.com>) N
+() N
+() N
+(About.com <http://about.com/?tb=1>) S 40 T (Beat the IRS!) N
+(<http://taxtime.about.com/?tb=2> ) S 40 T () S 48 T () S 56 T () S 64 T (*Free* Newslette) N
+(r) N
+(<javascript:zOs\(0,2\)> ) N
+() N
+(Arts & Literature <http://about.com/arts/?tb=1>Automotive) N
+(<http://about.com/autos/?tb=1>Business) N
+(<http://about.com/business/?tb=1>Cities & Towns) N
+(blcmdl2_select_tut.txt) (Page 13/14) (Mar 30, 05 11:16) title
+border
+/v 1 store
+/x0 x v get 3.147420 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(<http://about.com/citiestowns/?tb=1>Computing & Technology) p n
+(<http://about.com/compute/?tb=1>Education) N
+(<http://about.com/education/?tb=1>Entertainment) N
+(<http://about.com/entertainment/?tb=1>Electronics & Gadgets) N
+(<http://about.com/gadgets/?tb=1>Food & Drink) N
+(<http://about.com/food/?tb=1>Health & Fitness) N
+(<http://about.com/health/?tb=1>Hobbies & Games) N
+(<http://about.com/hobbies/?tb=1>Home & Garden) N
+(<http://about.com/homegarden/?tb=1>Homework Help) N
+(<http://about.com/homework/?tb=1>Jobs & Careers) N
+(<http://about.com/careers/?tb=1>Money <http://about.com/money/?tb=1>News) N
+(& Issues <http://about.com/newsissues/?tb=1>Parenting & Family) N
+(<http://about.com/parenting/?tb=1>People & Relations) N
+(<http://about.com/people/?tb=1>Religion & Spirituality) N
+(<http://about.com/religion/?tb=1>Shopping) N
+(<http://about.com/shopping/?tb=1>Sports & Recreation) N
+(<http://about.com/sports/?tb=1>Style <http://about.com/style/?tb=1>Teens) N
+(<http://about.com/teens/?tb=1>Travel <http://about.com/travel/?tb=1>) N
+(blcmdl2_select_tut.txt) (Page 14/14) (Mar 30, 05 11:16) title
+border
+grestore
+(Printed by root) rhead
+(blcmdl2_select_tut.txt) (7/7) (Wednesday March 30, 2005) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

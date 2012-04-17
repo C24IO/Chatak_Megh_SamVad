@@ -1,0 +1,2 @@
+k3b: WARNING: KGenericFactory: instance requested but no instance name or about data passed to the constructor!
+kdecore (KAction): WARNING: KActionCollection::KActionCollection( QObject *parent, const char *name, KInstance *instance )

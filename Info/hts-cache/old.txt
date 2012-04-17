@@ -1,0 +1,3 @@
+date	size'/'remotesize	flags(request:Update,Range state:File response:Modified,Chunked,gZipped)	statuscode	status ('servermsg')	MIME	Etag|Date	URL	localfile	(from URL)
+12:29:30	62/62	------	200	untouched ('OK')	text/plain	etag:%22200140-3e-fc89dd40%22	www.cs.stanford.edu/robots.txt		(from )
+12:29:30	1076/1076	------	403	error ('Forbidden')	text/html	date:Thu,%2007%20Apr%202005%2006:46:21%20GMT	www.cs.stanford.edu/cslibrary/	www.cs.stanford.edu/cslibrary/index.html	(from )

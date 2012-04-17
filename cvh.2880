@@ -1,0 +1,559 @@
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigaction(SIGTSTP, {SIG_DFL}, {SIG_DFL}, 8) = 0
+rt_sigaction(SIGTTIN, {SIG_DFL}, {SIG_DFL}, 8) = 0
+rt_sigaction(SIGTTOU, {SIG_DFL}, {SIG_DFL}, 8) = 0
+close(3)      = 0
+dup2(4, 1)                                = 1
+close(4)                              = 0
+stat64(".", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat64("/sbin/condor_q", 0xbffff580)                    = -1 ENOENT (No such file or directory)
+stat64("/bin/condor_q", 0xbffff580)                      = -1 ENOENT (No such file or directory)
+stat64("/usr/sbin/condor_q", 0xbffff580)                 = -1 ENOENT (No such file or directory)
+stat64("/usr/bin/condor_q", 0xbffff580)        = -1 ENOENT (No such file or directory)
+stat64("/usr/X11R6/bin/condor_q", 0xbffff580)         = -1 ENOENT (No such file or directory)
+stat64("/usr/local/sbin/condor_q", 0xbffff580)         = -1 ENOENT (No such file or directory)
+stat64("/usr/local/bin/condor_q", {st_mode=S_IFREG|0755, st_size=2202160, ...}) = 0
+stat64("/usr/local/bin/condor_q", {st_mode=S_IFREG|0755, st_size=2202160, ...}) = 0
+rt_sigaction(SIGINT, {SIG_DFL}, {SIG_DFL}, 8) = 0
+rt_sigaction(SIGQUIT, {SIG_DFL}, {SIG_IGN}, 8) = 0
+rt_sigaction(SIGCHLD, {SIG_DFL}, {0x807ab00, [], 0}, 8) = 0
+execve("/usr/local/bin/condor_q", ["condor_q"], [/* 28 vars */]) = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+brk(0) = 0x8263000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)      = 0x40017000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=82368, ...}) = 0
+old_mmap(NULL, 82368, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40018000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libresolv.so.2", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\0&\0\000"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=64636, ...}) = 0
+old_mmap(NULL, 73352, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4002d000
+old_mmap(0x4003c000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xf000) = 0x4003c000
+old_mmap(0x4003d000, 7816, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4003d000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libdl.so.2", O_RDONLY)   = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`\r\0\000"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=8604, ...}) = 0
+old_mmap(NULL, 11464, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4003f000
+old_mmap(0x40041000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1000) = 0x40041000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/lib/libstdc++.so.5", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\200\301"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=737816, ...}) = 0
+old_mmap(NULL, 761536, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x40042000
+old_mmap(0x400e1000, 90112, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x9e000) = 0x400e1000
+old_mmap(0x400f7000, 20160, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x400f7000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libm.so.6", O_RDONLY)    = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\00005\0\000"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=134816, ...}) = 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x400fc000
+old_mmap(NULL, 137296, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400fd000
+old_mmap(0x4011e000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x20000) = 0x4011e000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/libgcc_s.so.1", O_RDONLY)    = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\20\30\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=33472, ...}) = 0
+old_mmap(NULL, 36484, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4011f000
+old_mmap(0x40127000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x7000) = 0x40127000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libc.so.6", O_RDONLY)    = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\200U\1"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=1153188, ...}) = 0
+old_mmap(NULL, 1159068, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x40128000
+old_mmap(0x40239000, 32768, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x111000) = 0x40239000
+old_mmap(0x40241000, 8092, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40241000
+close(3)                                = 0
+old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40243000
+set_thread_area({entry_number:-1 -> 6, base_addr:0x402438e0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
+munmap(0x40018000, 82368)               = 0
+brk(0)                                  = 0x8263000
+brk(0x8284000)                          = 0x8284000
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbffff080) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "PASSWD_CACHE_REFRESH is undefine"..., 62) = 62
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+socket(PF_FILE, SOCK_STREAM, 0)         = 3
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+connect(3, {sa_family=AF_FILE, path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+socket(PF_FILE, SOCK_STREAM, 0)         = 3
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+connect(3, {sa_family=AF_FILE, path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+open("/etc/nsswitch.conf", O_RDONLY)    = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=465, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "# /etc/nsswitch.conf\n#\n# Example"..., 4096) = 465
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=82368, ...}) = 0
+old_mmap(NULL, 82368, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40018000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libnss_compat.so.2", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0000\22\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=29100, ...}) = 0
+old_mmap(NULL, 32112, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x40244000
+old_mmap(0x4024b000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x6000) = 0x4024b000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libnsl.so.1", O_RDONLY)  = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\3006\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=74104, ...}) = 0
+old_mmap(NULL, 85440, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4024c000
+old_mmap(0x4025e000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x11000) = 0x4025e000
+old_mmap(0x4025f000, 7616, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4025f000
+close(3)                                = 0
+munmap(0x40018000, 82368)               = 0
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=82368, ...}) = 0
+old_mmap(NULL, 82368, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40018000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libnss_nis.so.2", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\360\35"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=34564, ...}) = 0
+old_mmap(NULL, 33616, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x40261000
+old_mmap(0x40269000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8000) = 0x40269000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/libnss_files.so.2", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\360\34"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=34628, ...}) = 0
+old_mmap(NULL, 37924, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4026a000
+old_mmap(0x40273000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8000) = 0x40273000
+close(3)                                = 0
+munmap(0x40018000, 82368)               = 0
+open("/etc/passwd", O_RDONLY)           = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(3, 0, [0], SEEK_CUR)            = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 3, 0) = 0x40018000
+_llseek(3, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(3)                                = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+open("/etc/condor/condor_config", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/home/condor/condor_config", O_RDONLY) = 3
+close(3)                                = 0
+stat64("/home/condor/condor_config", {st_mode=S_IFREG|0644, st_size=55095, ...}) = 0
+open("/home/condor/condor_config", O_RDONLY) = 3
+close(3)                                = 0
+open("/home/condor/condor_config", O_RDONLY) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=55095, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "################################"..., 4096) = 4096
+read(3, "################################"..., 4096) = 4096
+read(3, "s.wisc.edu\", so the Condor devel"..., 4096) = 4096
+read(3, "th OWNER\n##  permission, you wou"..., 4096) = 4096
+read(3, "e following values to point to i"..., 4096) = 4096
+read(3, " that you would like to\n##  use."..., 4096) = 4096
+read(3, "#  description file, any email C"..., 4096) = 4096
+read(3, "f the end of that\n##  daemon\'s l"..., 4096) = 4096
+read(3, "(keyboard and\n##  mouse) activit"..., 4096) = 4096
+read(3, "1 to MAX_VIRTUAL_MACHINE_TYPES ("..., 4096) = 4096
+read(3, "ory, this is an estimate\n##     "..., 4096) = 4096
+read(3, "to remove other user\'s jobs). \n#"..., 4096) = 4096
+read(3, "ve with respect to ClassAd vs. c"..., 4096) = 4096
+read(3, "AME)\n\n##------------------------"..., 4096) = 1847
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffef20) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Finding local host information, "..., 54) = 54
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffef20) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "gethostname() returned fully qua"..., 60) = 60
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+stat64("/home/condor/condor_config.local", {st_mode=S_IFREG|0644, st_size=10397, ...}) = 0
+open("/home/condor/condor_config.local", O_RDONLY) = 3
+close(3)                                = 0
+open("/home/condor/condor_config.local", O_RDONLY) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=10397, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "################################"..., 4096) = 4096
+read(3, "uld the collector check for mach"..., 4096) = 4096
+read(3, " \"Start\" would represent the his"..., 4096) = 2205
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+geteuid32()                             = 0
+open("/etc/passwd", O_RDONLY)           = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(3, 0, [0], SEEK_CUR)            = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 3, 0) = 0x40018000
+_llseek(3, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(3)                                = 0
+getpid()                                = 2880
+getppid()                               = 2879
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeef0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Trying to initialize local IP ad"..., 61) = 61
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeef0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Have not found an IP yet, callin"..., 50) = 50
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeec0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Trying to find IP addr for \"mini"..., 43) = 43
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeec0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Calling gethostbyname(minix.it.m"..., 37) = 37
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+gettimeofday({1118722993, 499302}, NULL) = 0
+open("/etc/resolv.conf", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=22, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "nameserver 10.1.30.99\n", 4096) = 22
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+socket(PF_FILE, SOCK_STREAM, 0)         = 3
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+connect(3, {sa_family=AF_FILE, path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+socket(PF_FILE, SOCK_STREAM, 0)         = 3
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+connect(3, {sa_family=AF_FILE, path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+close(3)                                = 0
+open("/etc/host.conf", O_RDONLY)        = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=26, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "order hosts,bind\nmulti on\n", 4096) = 26
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/etc/hosts", O_RDONLY)            = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=670, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "127.0.0.1\t localhost localhost.l"..., 4096) = 670
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeec0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Found IP addr in hostent: 10.1.3"..., 37) = 37
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+geteuid32()                             = 0
+open("/etc/passwd", O_RDONLY)           = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(3, 0, [0], SEEK_CUR)            = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 3, 0) = 0x40018000
+_llseek(3, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(3)                                = 0
+open("/etc/condor/condor_config.root", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/home/condor/condor_config.root", O_RDONLY) = -1 ENOENT (No such file or directory)
+geteuid32()                             = 0
+open("/etc/passwd", O_RDONLY)           = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(3, 0, [0], SEEK_CUR)            = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 3, 0) = 0x40018000
+_llseek(3, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(3)                                = 0
+stat64("/home/condor/log/.config.TOOL", 0xbffff69c) = -1 ENOENT (No such file or directory)
+stat64("/tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=8192, ...}) = 0
+gettimeofday({1118722993, 513816}, NULL) = 0
+lstat64("/tmp/file9kWNIJ", 0xbffff714)  = -1 ENOENT (No such file or directory)
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffef70) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Trying to initialize local IP ad"..., 61) = 61
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffef70) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "NETWORK_INTERFACE not in config "..., 59) = 59
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+geteuid32()                             = 0
+open("/etc/passwd", O_RDONLY)           = 3
+fcntl64(3, F_GETFD)                     = 0
+fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(3, 0, [0], SEEK_CUR)            = 0
+fstat64(3, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 3, 0) = 0x40018000
+_llseek(3, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(3)                                = 0
+rt_sigaction(SIGPIPE, {SIG_IGN}, NULL, 8) = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffefa0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "KEYCACHE: created: 826ea08\n", 27) = 27
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeee0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "TOOL_TIMEOUT_MULTIPLIER is undef"..., 63) = 63
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbffff000) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "New Daemon obj (schedd) name: \"N"..., 65) = 65
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeb50) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Neither name nor addr specified,"..., 104) = 104
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffec10) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "SCHEDD_ADDRESS_FILE", 19)     = 19
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffead0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Finding address for local daemon"..., 92) = 92
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/home/condor/log/.schedd_address", O_RDONLY) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=89, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+read(3, "<10.1.30.25:32772>\n$CondorVersio"..., 4096) = 89
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffead0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40019000
+write(4, "Found valid address \"<10.1.30.25"..., 63) = 63
+close(4)                                = 0
+munmap(0x40019000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffead0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40019000
+write(4, "Found version string \"$CondorVer"..., 81) = 81
+close(4)                                = 0
+munmap(0x40019000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffead0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40019000
+write(4, "Found platform string \"$CondorPl"..., 80) = 80
+close(4)                                = 0
+munmap(0x40019000, 4096)                = 0
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeb50) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Using port 32772 based on addres"..., 55) = 55
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeee0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Q_QUERY_TIMEOUT is undefined, us"..., 56) = 56
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffece0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "TOOL_TIMEOUT_MULTIPLIER is undef"..., 63) = 63
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffee00) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "New Daemon obj (schedd) name: \"N"..., 79) = 79
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffe950) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Already have address, no info to"..., 40) = 40
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+fstat64(3, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffee10) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(3, "Using port 32772 based on addres"..., 55) = 55
+close(3)                                = 0
+munmap(0x40018000, 4096)                = 0
+socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+fcntl64(3, F_GETFL)                     = 0x802 (flags O_RDWR|O_NONBLOCK)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffec40) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "LOWPORT undefined\n", 18)     = 18
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+bind(3, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("10.1.30.25")}, 16) = 0
+setsockopt(3, SOL_SOCKET, SO_LINGER, {onoff=0, linger=0}, 8) = 0
+setsockopt(3, SOL_SOCKET, SO_KEEPALIVE, [1], 4) = 0
+time(NULL)                              = 1118722993
+connect(3, {sa_family=AF_INET, sin_port=htons(32772), sin_addr=inet_addr("10.1.30.25")}, 16) = -1 EINPROGRESS (Operation now in progress)
+select(4, NULL, [3], [3], {20, 0})      = 1 (left {20, 0})
+getpeername(3, {sa_family=AF_INET, sin_port=htons(32772), sin_addr=inet_addr("10.1.30.25")}, [16]) = 0
+getsockname(3, {sa_family=AF_INET, sin_port=htons(32791), sin_addr=inet_addr("10.1.30.25")}, [16]) = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffed70) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "STARTCOMMAND: starting 1111 to <"..., 69) = 69
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+fcntl64(3, F_GETFL)                     = 0x802 (flags O_RDWR|O_NONBLOCK)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+getsockname(3, {sa_family=AF_INET, sin_port=htons(32791), sin_addr=inet_addr("10.1.30.25")}, [16]) = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffe5d0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "SECMAN: command 1111 to <10.1.30"..., 62) = 62
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+time(NULL)                              = 1118722993
+select(4, [3], [3], [3], {20, 0})       = 1 (out [3], left {20, 0})
+send(3, "\1\0\0\1j\0\0\0\0\0\0\352j\0\0\0\0\0\0\0\fAuthMethods"..., 367, 0) = 367
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\1\0\0\1)", 5, 0)              = 5
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\0\0\0\0\0\0\0\nAuthentication = \"NO\"\0En"..., 297, 0) = 297
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\1\0\0\0\211", 5, 0)           = 5
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\0\0\0\0\0\0\0\3Sid = \"minix:2839:111872"..., 137, 0) = 137
+time(NULL)                              = 1118722993
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffe5e0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "SECMAN: added session minix:2839"..., 71) = 71
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffe5e0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "SECMAN: startCommand succeeded.\n", 32) = 32
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+geteuid32()                             = 0
+open("/etc/passwd", O_RDONLY)           = 4
+fcntl64(4, F_GETFD)                     = 0
+fcntl64(4, F_SETFD, FD_CLOEXEC)         = 0
+_llseek(4, 0, [0], SEEK_CUR)            = 0
+fstat64(4, {st_mode=S_IFREG|0644, st_size=2206, ...}) = 0
+mmap2(NULL, 2206, PROT_READ, MAP_SHARED, 4, 0) = 0x40018000
+_llseek(4, 2206, [2206], SEEK_SET)      = 0
+munmap(0x40018000, 2206)                = 0
+close(4)                                = 0
+time(NULL)                              = 1118722993
+select(4, [3], [3], [3], {20, 0})       = 1 (out [3], left {20, 0})
+send(3, "\1\0\0\0\35\0\0\0\0\0\0\'&\0\0\0\0\0\0\'$\0\0\0\0\0\0\0"..., 34, 0) = 34
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\1\0\0\0\20", 5, 0)            = 5
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\377\377\377\377\377\377\377\377\0\0\0\0\0\0\0\0", 16, 0) = 16
+time(NULL)                              = 1118722993
+select(4, [3], [3], [3], {20, 0})       = 1 (out [3], left {20, 0})
+send(3, "\1\0\0\0\10\0\0\0\0\0\0\'\27", 13, 0) = 13
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\1\0\0\0\10", 5, 0)            = 5
+time(NULL)                              = 1118722993
+select(4, [3], NULL, NULL, {20, 0})     = 1 (in [3], left {20, 0})
+recv(3, "\0\0\0\0\0\0\0\0", 8, 0)       = 8
+getsockname(3, {sa_family=AF_INET, sin_port=htons(32791), sin_addr=inet_addr("10.1.30.25")}, [16]) = 0
+open("/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+fstat64(4, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0
+ioctl(4, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfffeec0) = -1 ENOTTY (Inappropriate ioctl for device)
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(4, "CLOSE <10.1.30.25:32791> fd=3\n", 30) = 30
+close(4)                                = 0
+munmap(0x40018000, 4096)                = 0
+close(3)                                = 0
+fstat64(1, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40018000
+write(1, "\n\n-- Submitter: minix.it.mitp : "..., 182) = 182
+munmap(0x40018000, 4096)                = 0
+exit_group(0)                           = ?

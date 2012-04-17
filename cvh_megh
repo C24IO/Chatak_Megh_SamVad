@@ -1,0 +1,141 @@
+
+
+THE THREAD IDS ARE REQUEST_HANDLER : 16386 ,FREE_HANDLER : 32771  
+
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.875356 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.875356 
+
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.900247 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.875356 
+
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.946774 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.992301 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+
+minix.it.mitp
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.040410 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+
+minix.it.mitp
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.059888 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+
+minix.it.mitp
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.086804 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+
+minix.it.mitp
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.111416 
+FREE HOST Connection Request arrived from 10.1.30.25 
+
+------------------------------------------------------------------------
+minix
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 66.924478 
+
+minix.ecom.tifr.res.in
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.016928 
+
+minix.it.mitp
+ kflops 431866 Mips 949 Memory 256 AVG CPU IDLE 67.135436 
+REQUESTOR HOST Connection Request arrived from 10.1.30.25 
+
+
+------------------------------------------------------------------------
+
+
+minix.it.mitp queue_length  -> 50
+hosts_taken 0
+rank 0
+nice_val 0
+report_count -1082131768
+time_fact1 0
+time_fact2 0
+stability_fact 0
+ 
+
+-----------------------SCHEDULED DATA------------------------------
+
+
+NEXT
+REQUESTOR HOST Connection Request arrived from 10.1.30.25 
+
+Its new minix.ecom.tifr.res.in
+
+------------------------------------------------------------------------
+
+
+minix.it.mitp queue_length  -> 50
+hosts_taken 0
+rank 0
+nice_val 0
+report_count -1082131768
+time_fact1 0
+time_fact2 0
+stability_fact 0
+ 
+minix.ecom.tifr.res.in queue_length

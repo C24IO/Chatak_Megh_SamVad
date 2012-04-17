@@ -1,0 +1,300 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/utsname.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <errorno.h>
+struct REQ_HOSTS{
+
+	struct hostent *req_host;
+	long int rank;
+	int nice_val;
+	long int req_queue_len;
+
+};
+
+struct FREE_HOSTS{
+
+	struct hostnet *free_host;
+	long int rank;
+	int nice_val;
+	int cpu_power;
+	long int memory;
+	double avg_cpu_idle;
+};
+
+
+#define MEGH_PORT      19061
+#define REQ_HOST_PORT  19062
+#define FREE_HOST_PORT 19063
+
+#define BACK_LOG 10
+
+
+/*Function Prototypes*/
+
+int _get_host_name(char *buffer, int len);
+int init_socket(int *sock_fd, int port_no);
+	
+
+
+
+
+int main(void){
+
+	int status = 0;
+	FILE *file_in = 0 , *file_out = 0 ;
+	char *buff = NULL;
+	size_t n = NULL;
+
+	system("condor_q | grep I  | wc -l > /tmp/cvh_tmp");
+
+	
+	file_in = fopen("/tmp/cvh_tmp", "r");
+
+	getline(&buff, &n, );
+
+			
+	status = read(file_in, buff, 1);
+
+	printf("\n\nREAD : %d %d \n\n",status,errno);
+	
+	
+	exit(0);
+}
+
+int _get_host_name(char *buffer, int length){
+
+	struct utsname sysname;
+	int status = 0;
+
+	memset(&sysname, 0 , sizeof(sysname));
+	status = uname(&sysname);
+
+	if( -1 != status ){
+
+			strncpy(buffer, sysname.nodename, length);
+			
+		}
+
+	return(status);
+
+}
+			
+
+
+int init_socket(int *sock_fd, int port_no){
+
+
+	int lis_sock = *sock_fd,	   
+	    status = 0,
+	    on = 0,
+	    port = port_no;
+
+	struct hostent *hostptr = NULL;
+
+	char hostname[80] = {'\0'};
+
+	struct sockaddr_in megh_name = {0};
+
+
+	lis_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	if(-1 == lis_sock)
+	{
+		perror("Error in Socket Creation......");
+		exit(1);
+	}
+
+	/* For turning off the adress check and let the port numbers be reused .... **/
+
+		
+	on = 1;
+
+	status = setsockopt(lis_sock, SOL_SOCKET, SO_REUSEADDR, (const char *) &on, sizeof(on));
+
+	if(-1 == status ){
+
+		perror("setsockopt(.....,SO_REUSEADDR,.......)");
+	}
+
+	{
+		struct linger linger = {0};
+
+		linger.l_onoff = 1;
+		linger.l_linger = 0;
+
+		status = setsockopt( lis_sock, 
+				SOL_SOCKET, SO_LINGER, 
+				(const char *) &linger, 
+				sizeof(linger) );
+
+		
+		if(-1 == lis_sock){
+			
+		perror("setsockopt(......SO_LINGER.......)");
+		exit(1);
+		}
+
+	}
+
+
+	status = _get_host_name(hostname, sizeof(hostname));  
+
+	if(-1 == status){
+		perror("_get_host_name()");
+		exit(1);
+	}
+
+	
+	hostptr = gethostbyname(hostname);
+
+	
+	if(NULL == hostptr){
+		perror("gethostbyname()");
+	
+		exit(1);
+	}
+
+
+
+	(void) memset(&megh_name, 0 , sizeof(megh_name));
+
+	(void) memcpy(&megh_name.sin_addr, hostptr->h_addr, hostptr->h_length);
+
+	/* for 0.0.0.0:9918 
+	 *
+	 * megh_name.sin_addr.s_addr=htonl(INADDR_ANY);
+	 * 
+	 * */
+		
+	megh_name.sin_family = AF_INET;
+
+	megh_name.sin_port = htons(port);
+
+	status = bind( lis_sock, (struct sockaddr *) &megh_name, sizeof(megh_name));
+
+
+	if(-1 == status){
+		
+		perror("bind()");
+		exit(1);
+	}
+
+
+	*sock_fd = lis_sock;
+	return(status);
+	
+}
+
+int daemonize(void){
+
+	struct rlimit resourceLimit = {0};
+	int status = -1;
+	int fileDesc = -1;
+	int i = 0;
+
+	status = fork();
+	
+	switch(status){
+
+		case -1:
+			perror("Daemonizing fork() error....");
+			exit(1);
+
+		case 0:
+			break;
+
+		default: 
+			exit(0);
+
+	}
+
+
+	resourceLimit.rlim_max = 0;
+
+/* 
+ * Here instead of doing close 1 2 3, elegantly call the resourcelimit function and close all the open file descriptors, 
+ * remember to call it before the program gets functioning or you will be the fool. 
+ *
+ * */
+	
+	status = getrlimit(RLIMIT_NOFILE, &resourceLimit);
+
+
+	if(-1 == status){
+		
+		perror("Daemonizing getrlimit() error.... :-( ");
+		
+		exit(1);
+	}
+
+
+	if( 0 == resourceLimit.rlim_max){
+/*		fprintf(logfile,"Max Number of open file descriptors is 0 ????? !!!!!\n\n\n");*/
+		perror("Max Number of open file descriptors is 0 ????? !!!!!\n\n\n");
+
+		exit(1);
+	}
+
+	for(i = 0 ; i< resourceLimit.rlim_max ; i++){
+
+		(void) close(i);
+	}
+
+
+	status = setsid();
+
+
+	if(-1 == status){
+		
+		perror("Daemonizing setsid()");
+		exit(1);
+	}
+
+
+	status = fork();
+
+	switch(status){
+
+		case -1:
+			perror("Daemonizing fork() after setsid()");
+			exit(1);
+
+		case 0:
+			break;
+
+		default:
+			exit(0);
+
+	}
+
+	chdir("/");
+
+	umask(0);
+
+	fileDesc = open("/dev/null", O_RDWR);
+
+	(void) dup(fileDesc);
+	(void) dup(fileDesc);
+
+
+	return 0;
+
+}
+		
+		
+
+	
+	
+		

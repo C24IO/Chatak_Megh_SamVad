@@ -1,0 +1,32 @@
+socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+gettimeofday({1118722993, 633542}, NULL) = 0
+open("/etc/resolv.conf", O_RDONLY)      = 4
+fstat64(4, {st_mode=S_IFREG|0644, st_size=22, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4095a000
+read(4, "nameserver 10.1.30.99\n", 4096) = 22
+read(4, "", 4096)                       = 0
+close(4)                                = 0
+munmap(0x4095a000, 4096)                = 0
+uname({sys="Linux", node="minix.it.mitp", ...}) = 0
+connect(3, {sa_family=AF_INET, sin_port=htons(19063), sin_addr=inet_addr("158.144.64.32")}, 16) = -1 EHOSTUNREACH (No route to host)
+dup(2)                                  = 4
+fcntl64(4, F_GETFL)                     = 0x2 (flags O_RDWR)
+fstat64(4, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 8), ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4095a000
+_llseek(4, 0, 0x40958ffc, SEEK_CUR)     = -1 ESPIPE (Illegal seek)
+write(4, "Requestor thread connect() error"..., 52) = 52
+close(4)                                = 0
+munmap(0x4095a000, 4096)                = 0
+fstat64(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 8), ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4095a000
+write(1, "\n", 1)                       = 1
+write(1, "This is the errno 113 \n\n", 24) = 24
+write(1, "This is the error message No rou"..., 44) = 44
+setitimer(ITIMER_PROF, {it_interval={0, 0}, it_value={0, 0}}, NULL) = 0
+rt_sigaction(SIGPROF, {SIG_DFL}, NULL, 8) = 0
+open("gmon.out", O_WRONLY|O_CREAT|O_TRUNC|O_NOFOLLOW, 0666) = 4
+write(4, "gmon\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 20) = 20
+writev(4, [{"\0", 1}, {"\360\214\4\10\254\234\4\10\360\3\0\0d\0\0\0seconds\0\0"..., 32}, {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 2016}], 3) = 2049
+close(4)                                = 0
+munmap(0x4095a000, 4096)                = 0
+exit_group(1)                           = ?

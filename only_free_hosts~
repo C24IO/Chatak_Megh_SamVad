@@ -1,0 +1,221 @@
+typedef struct freehost_dllist {
+
+	struct freehost_dllist  *flink;
+	struct freehost_dllist  *blink;
+	structFREE_HOSTS freehost;
+
+} *freehostDllist;
+
+
+
+
+
+
+/*Function Prototypes*/
+
+
+
+freehostDllist new_dllist_freehost();
+void free_dllist_freehost(freehostDllist);
+void dll_delete_node_freehost(freehostDllist);
+int dll_empty_freehost(freehostDllist);
+void dll_append_freehost(freehostDllist, structFREE_HOSTS);
+void dll_prepend_freehost(freehostDllist, structFREE_HOSTS);
+void dll_insert_b_freehost(freehostDllist, structFREE_HOSTS);
+void dll_insert_a_freehost(freehostDllist,structFREE_HOSTS);
+structFREE_HOSTS  dll_val_freehost(freehostDllist);
+
+
+
+/*# defines and macros for easy operations.*/
+
+
+#define dll_first(d) ((d)->flink)
+#define dll_next(d) ((d)->flink)
+#define dll_last(d) ((d)->blink)
+#define dll_prev(d) ((d)->blink)
+#define dll_nil(d) (d)
+
+#define dll_traverse(ptr, list) \
+	  for (ptr = list->flink; ptr != list; ptr = ptr->flink)
+#define dll_rtraverse(ptr, list) \
+	  for (ptr = list->blink; ptr != list; ptr = ptr->blink)
+
+
+
+
+
+struct FREE_HOSTS{
+
+	char free_host_str[256];
+	long int rank;
+	int nice_val;
+	int cpu_power;
+	long int memory;
+	double avg_cpu_idle;
+	int time_fact1;
+	int time_fact2;
+	int stablity_fact;
+};
+/*
+* Each list contains a sentinal node, so that     
+*  * the first item in list l is l->flink.  If l is  
+*   * empty, then l->flink = l->blink = l.            
+*/
+
+
+freehostDllist new_dllist_freehost()
+{
+	freehostDllist d;
+	  
+	d = (freehostDllist) malloc (sizeof(struct freehost_dllist ));
+	d->flink = d;
+	d->blink = d;
+	return d;
+}
+ 
+
+void dll_delete_node_freehost(freehostDllist node)		/* Deletes an arbitrary iterm */
+{
+	node->flink->blink = node->blink;
+	node->blink->flink = node->flink;
+	free(node);
+}
+
+int dll_empty_freehost(freehostDllist l)
+{
+	return (l->flink == l);
+}
+ 
+void free_dllist_freehost(freehostDllist l)
+{
+	while (!dll_empty_freehost(l)) {
+		dll_delete_node_freehost(dll_first(l));
+}
+	free(l);
+}
+ 
+
+
+
+
+
+void dll_insert_b_freehost(freehostDllist node,structFREE_HOSTS v)       /* Inserts before a given node */
+{
+	freehostDllist newnode;
+	  
+	newnode = (freehostDllist) malloc (sizeof(struct freehost_dllist ));
+	newnode->freehost = v;
+	newnode->flink = node;
+	newnode->blink = node->blink;
+	newnode->flink->blink = newnode;	  
+	newnode->blink->flink = newnode;
+}
+
+void dll_insert_a_freehost(freehostDllist n,structFREE_HOSTS freehost)        /* Inserts FREE_HOSTS freehost  after a given node */
+{
+	dll_insert_b_freehost(n->flink, freehost);
+}
+
+
+
+
+
+
+void dll_append_freehost(freehostDllist l, structFREE_HOSTS freehost)     /* Inserts FREE_HOSTS freehost at the end of the list */
+{
+	dll_insert_b_freehost(l, freehost);
+}
+
+
+
+
+
+void dll_prepend_freehost(freehostDllist l,structFREE_HOSTS freehost)    /* Inserts FREE_HOSTS freehost at the beginning of the list */
+{
+	dll_insert_b_freehost(l->flink, freehost);
+}
+
+
+
+
+
+structFREE_HOSTS dll_val_freehost(freehostDllist l) /* gives value of FREE_HOSTS freehost */
+{
+	return l->freehost;
+}
+
+
+
+
+
+ /* 1) Free Host hostname*/
+		mod_read(chatakReader,buffer,sizeof(buffer));
+
+		/*
+		 * Here Basically we find out if there is previous host entry of this host 
+		 * in this DLL if yes we delete that entry and then insert new values.
+		 *
+		* */
+
+		dll_traverse(free_host_list_tmp, free_host_list_1 ){
+
+			if (!strcmp(free_host_list_tmp->freehost.free_host_str,buffer)){
+
+				dll_delete_node_freehost((free_host_list_tmp));
+
+
+}
+
+}
+
+
+
+
+		
+		strcpy(free_host_tmp.free_host_str,buffer);
+		memset(buffer,0,sizeof(buffer));
+/* CPU KFlops */
+		
+		mod_read(chatakReader,buffer,sizeof(buffer));
+		free_host_tmp.cpu_kflops = atol(buffer);
+		memset(buffer,0,sizeof(buffer));
+		
+/*CPU Mips */		
+		mod_read(chatakReader,buffer,sizeof(buffer));
+		free_host_tmp.cpu_mips = atol(buffer);
+		memset(buffer,0,sizeof(buffer));
+		
+/*Host Memory*/		
+		mod_read(chatakReader,buffer,sizeof(buffer));
+		free_host_tmp.cpu_memory = atol(buffer);
+		memset(buffer,0,sizeof(buffer));
+
+		/*putting the dummy values here */
+
+		free_host_tmp.rank = 0;
+		free_host_tmp.stability_fact = 0;
+		free_host_tmp.avg_cpu_idle = 0;
+		
+		
+		
+		/*Now finally add the node to the DLL we have made. :*/
+		
+		dll_append_freehost(free_host_list_1 , free_host_tmp);
+
+
+		/*To see if all is ok .....*/
+
+		pthread_mutex_unlock(&freehost_list_mutex);
+
+
+		pthread_mutex_lock(&freehost_list_mutex);
+		printf("\n\n------------------------------------------------------------------------\n\n");
+
+		dll_traverse(free_host_list_tmp, free_host_list_1 ) printf("\n%s kflops %ld Mips %ld Memory %ld  \n",
+				free_host_list_tmp->freehost.free_host_str, 
+				free_host_list_tmp->freehost.req_queue_len);
+		
+		pthread_mutex_unlock(&freehost_list_mutex);
+		
+
